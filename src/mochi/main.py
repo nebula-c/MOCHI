@@ -9,3 +9,6 @@ def main():
     monitor = Mochi_Monitor.Mochi_Monitor()
     monitor.show()
     sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()
