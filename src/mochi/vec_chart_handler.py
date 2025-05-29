@@ -11,7 +11,7 @@ class vec_chart_handler(FigureCanvas):
         super().__init__(fig)
         self.setParent(parent)
         self.ax = fig.add_subplot(111, projection='3d')
-        self.plot_vector_field()
+        # self.plot_vector_field()
 
 
     def plot_vector_field(self):
@@ -23,20 +23,18 @@ class vec_chart_handler(FigureCanvas):
         w = z * 0
 
         self.ax.quiver(x, y, z, u, v, w, length=15, normalize=True)
-        self.ax.set_xlim([-100,100])
-        self.ax.set_ylim([-100,100])
-        self.ax.set_zlim([-100,100])
+        self.ax.set_xlim([-self.internal_parameter.x_3d_range/2,self.internal_parameter.x_3d_range/2])
+        self.ax.set_ylim([-self.internal_parameter.y_3d_range/2,self.internal_parameter.y_3d_range/2])
+        self.ax.set_zlim([-self.internal_parameter.z_3d_range/2,self.internal_parameter.z_3d_range/2])
 
     def SetParameters(self,parameter_input):
-        self.x_len = parameter_input.x_len
-        self.y_len = parameter_input.y_len
-        self.z_len = parameter_input.z_len
+        self.internal_parameter = parameter_input
         
 
     def SetMagnet(self,):
-        dx = self.x_len
-        dy = self.y_len
-        dz = self.z_len
+        dx = self.internal_parameter.x_magnet_len
+        dy = self.internal_parameter.y_magnet_len
+        dz = self.internal_parameter.z_magnet_len
         x = 0 - dx/2
         y = 0 - dy/2
         z = 0 - dz/2
@@ -63,3 +61,7 @@ class vec_chart_handler(FigureCanvas):
 
         box = Poly3DCollection(faces, alpha=0.3, facecolors='cyan', edgecolors='black')
         self.ax.add_collection3d(box)
+
+    def refresh(self):
+        self.SetMagnet()
+        
