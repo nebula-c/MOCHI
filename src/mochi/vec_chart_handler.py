@@ -20,7 +20,7 @@ class vec_chart_handler(FigureCanvas):
                               np.arange(-100, 100, 50))
         u = -y
         v = x
-        w = z * 0  # z 성분 0으로 설정
+        w = z * 0
 
         self.ax.quiver(x, y, z, u, v, w, length=15, normalize=True)
         self.ax.set_xlim([-100,100])
@@ -40,8 +40,6 @@ class vec_chart_handler(FigureCanvas):
         x = 0 - dx/2
         y = 0 - dy/2
         z = 0 - dz/2
-        
-        
 
         vertices = np.array([
             [x, y, z],

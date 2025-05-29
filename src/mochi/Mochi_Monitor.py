@@ -21,15 +21,15 @@ class Mochi_Monitor(QtWidgets.QMainWindow):
         self.widget_central = QtWidgets.QWidget()
         self.setCentralWidget(self.widget_central)
         self.layout = QtWidgets.QHBoxLayout(self.widget_central)
-        layout_charts = QtWidgets.QVBoxLayout(self.widget_central)
+        layout_charts = QtWidgets.QVBoxLayout()
         # self.layout.setSpacing(0)
         self.widget_central.setStyleSheet("background-color: white;")
 
-        self.layout_chart_up = QtWidgets.QHBoxLayout(self.widget_central)
-        self.layout_chart_down = QtWidgets.QHBoxLayout(self.widget_central)
+        self.layout_chart_up = QtWidgets.QHBoxLayout()
+        self.layout_chart_down = QtWidgets.QHBoxLayout()
         layout_charts.addLayout(self.layout_chart_up)
         layout_charts.addLayout(self.layout_chart_down)
-        self.layout.addLayout(layout_charts)
+        self.layout.addLayout(layout_charts,stretch=2)
 
         self.vec_chart_handler = vec_chart_handler.vec_chart_handler()
         self.vec_chart_handler.SetParameters(self.magnet_parameter)
@@ -45,9 +45,9 @@ class Mochi_Monitor(QtWidgets.QMainWindow):
         self.layout_chart_down.addWidget(self.z_chart)
 
 
-        layout_settings = QtWidgets.QVBoxLayout(self.widget_central)
+        layout_settings = QtWidgets.QVBoxLayout()
         widget_settings = self.setting_handler.widget_settings()
 
-        self.layout.addLayout(layout_settings)
-        self.layout.addLayout(widget_settings)
+        # self.layout.addLayout(layout_settings,stretch=2)
+        self.layout.addWidget(widget_settings,stretch=1)
         
