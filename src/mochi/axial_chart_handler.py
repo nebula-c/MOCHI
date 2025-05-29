@@ -12,8 +12,8 @@ class HeatmapCanvas(FigureCanvas):
         self.plot_test_heatmap()
 
     def plot_test_heatmap(self):
-        data = np.random.rand(10, 10)
-        heatmap = self.ax.imshow(data, cmap='hot', interpolation='None')
+        data = np.random.rand(100, 100)
+        heatmap = self.ax.imshow(data, cmap='viridis', interpolation='None')
         self.figure.colorbar(heatmap, ax=self.ax)
 
 
