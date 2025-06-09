@@ -1,5 +1,7 @@
 from PyQt6 import QtWidgets
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
+
+from mochi.EventBus import EventBus
 
 class setting_handler:
     def __init__(self,):
@@ -9,15 +11,23 @@ class setting_handler:
         self.ymax   =    100
         self.zmin   =   -100
         self.zmax   =    100
+        self.lineedit_magnet_xlen = None
+        self.lineedit_magnet_ylen = None
+        self.lineedit_magnet_zlen = None
     
     def SetParameters(self,parameter_input):
         self.internal_parameter = parameter_input
+        self.widget_3d_range = self.build_widget_3d_range()
+        self.widget_view_range = self.build_widget_view_range()
+        self.widget_magnet_val = self.build_widget_magnet_val()
+        self.widget_view = self.build_widget_view()
+        
 
     def widget_settings(self,):
         layout_settings = QtWidgets.QVBoxLayout()
         layout_buttons = QtWidgets.QHBoxLayout()
         
-        widget_3d_range = self.widget_3d_range()
+        widget_3d_range = self.widget_3d_range
         widget_3d_range.setContentsMargins(0, 0, 0, 0)
         layout_settings.addWidget(widget_3d_range)
 
@@ -26,7 +36,7 @@ class setting_handler:
         layout_settings.addWidget(line1)
         layout_settings.addStretch()
 
-        widget_view_range = self.widget_view_range()
+        widget_view_range = self.widget_view_range
         widget_view_range.setContentsMargins(0, 0, 0, 0)
         layout_settings.addWidget(widget_view_range)
 
@@ -34,7 +44,7 @@ class setting_handler:
         layout_settings.addWidget(line2)
         layout_settings.addStretch()
 
-        widget_magnet_val = self.widget_magnet_val()
+        widget_magnet_val = self.widget_magnet_val
         widget_magnet_val.setContentsMargins(0, 0, 0, 0)
         layout_settings.addWidget(widget_magnet_val)
 
@@ -45,7 +55,7 @@ class setting_handler:
 
 
 
-        widget_view = self.widget_view()
+        widget_view = self.widget_view
         widget_view.setContentsMargins(0, 0, 0, 0)
         layout_settings.addWidget(widget_view)
 
@@ -67,36 +77,39 @@ class setting_handler:
         return widget_temp_setting
 
 
-    def widget_3d_range(self,):
+    def build_widget_3d_range(self,):
         label_title_range      = QtWidgets.QLabel("3D range")
         
         layout_range = QtWidgets.QVBoxLayout()
         layout_range_val = QtWidgets.QVBoxLayout()
-        layout_x_range = QtWidgets.QHBoxLayout()
-        layout_y_range = QtWidgets.QHBoxLayout()
-        layout_z_range = QtWidgets.QHBoxLayout()
+        layout_3d_xrange = QtWidgets.QHBoxLayout()
+        layout_3d_yrange = QtWidgets.QHBoxLayout()
+        layout_3d_zrange = QtWidgets.QHBoxLayout()
         
 
         label_xmax      = QtWidgets.QLabel("X range")
-        lineedit_xmax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_3d_range))
-        layout_x_range.addWidget(label_xmax   )
-        layout_x_range.addWidget(lineedit_xmax)
+        self.lineedit_3d_xrange   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_3d_range))
+        lineedit_3d_xrange = self.lineedit_3d_xrange
+        layout_3d_xrange.addWidget(label_xmax   )
+        layout_3d_xrange.addWidget(lineedit_3d_xrange)
 
         label_ymax      = QtWidgets.QLabel("Y range")
-        lineedit_ymax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_3d_range))
-        layout_y_range.addWidget(label_ymax   )
-        layout_y_range.addWidget(lineedit_ymax)
+        self.lineedit_3d_yrange   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_3d_range))
+        lineedit_3d_yrange = self.lineedit_3d_yrange
+        layout_3d_yrange.addWidget(label_ymax   )
+        layout_3d_yrange.addWidget(lineedit_3d_yrange)
 
         label_zmax      = QtWidgets.QLabel("Z range")
-        lineedit_zmax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_3d_range))
-        layout_z_range.addWidget(label_zmax   )
-        layout_z_range.addWidget(lineedit_zmax)
+        self.lineedit_3d_zrange   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_3d_range))
+        lineedit_3d_zrange = self.lineedit_3d_zrange
+        layout_3d_zrange.addWidget(label_zmax   )
+        layout_3d_zrange.addWidget(lineedit_3d_zrange)
         
 
         layout_range.addWidget(label_title_range,stretch=1)
-        layout_range_val.addLayout(layout_x_range,stretch=1)
-        layout_range_val.addLayout(layout_y_range,stretch=1)
-        layout_range_val.addLayout(layout_z_range,stretch=1)
+        layout_range_val.addLayout(layout_3d_xrange,stretch=1)
+        layout_range_val.addLayout(layout_3d_yrange,stretch=1)
+        layout_range_val.addLayout(layout_3d_zrange,stretch=1)
         layout_range.addLayout(layout_range_val)
 
         widget_temp_range = QtWidgets.QWidget()        
@@ -104,46 +117,52 @@ class setting_handler:
         return widget_temp_range
 
 
-    def widget_view_range(self,):
+    def build_widget_view_range(self,):
         label_title_range      = QtWidgets.QLabel("View range")
         
         layout_range = QtWidgets.QVBoxLayout()
         layout_range_val = QtWidgets.QVBoxLayout()
-        layout_x_range = QtWidgets.QHBoxLayout()
-        layout_y_range = QtWidgets.QHBoxLayout()
-        layout_z_range = QtWidgets.QHBoxLayout()
+        layout_x_len = QtWidgets.QHBoxLayout()
+        layout_y_len = QtWidgets.QHBoxLayout()
+        layout_z_len = QtWidgets.QHBoxLayout()
         
         label_xmin      = QtWidgets.QLabel("xmin")
-        lineedit_xmin   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_view_range_min))
+        self.lineedit_xmin   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_view_range_min))
+        lineedit_xmin = self.lineedit_xmin
         label_xmax      = QtWidgets.QLabel("xmax")
-        lineedit_xmax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_view_range_max))
-        layout_x_range.addWidget(label_xmin   )
-        layout_x_range.addWidget(lineedit_xmin)
-        layout_x_range.addWidget(label_xmax   )
-        layout_x_range.addWidget(lineedit_xmax)
+        self.lineedit_xmax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_view_range_max))
+        lineedit_xmax = self.lineedit_xmax
+        layout_x_len.addWidget(label_xmin   )
+        layout_x_len.addWidget(lineedit_xmin)
+        layout_x_len.addWidget(label_xmax   )
+        layout_x_len.addWidget(lineedit_xmax)
 
         label_ymin      = QtWidgets.QLabel("ymin")
-        lineedit_ymin   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_view_range_min))
+        self.lineedit_ymin   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_view_range_min))
+        lineedit_ymin = self.lineedit_ymin
         label_ymax      = QtWidgets.QLabel("ymax")
-        lineedit_ymax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_view_range_max))
-        layout_y_range.addWidget(label_ymin   )
-        layout_y_range.addWidget(lineedit_ymin)
-        layout_y_range.addWidget(label_ymax   )
-        layout_y_range.addWidget(lineedit_ymax)
+        self.lineedit_ymax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_view_range_max))
+        lineedit_ymax = self.lineedit_ymax
+        layout_y_len.addWidget(label_ymin   )
+        layout_y_len.addWidget(lineedit_ymin)
+        layout_y_len.addWidget(label_ymax   )
+        layout_y_len.addWidget(lineedit_ymax)
 
         label_zmin      = QtWidgets.QLabel("zmin")
-        lineedit_zmin   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_view_range_min))
+        self.lineedit_zmin   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_view_range_min))
+        lineedit_zmin = self.lineedit_zmin
         label_zmax      = QtWidgets.QLabel("zmax")
-        lineedit_zmax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_view_range_max))
-        layout_z_range.addWidget(label_zmin   )
-        layout_z_range.addWidget(lineedit_zmin)
-        layout_z_range.addWidget(label_zmax   )
-        layout_z_range.addWidget(lineedit_zmax)
+        self.lineedit_zmax   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_view_range_max))
+        lineedit_zmax = self.lineedit_zmax
+        layout_z_len.addWidget(label_zmin   )
+        layout_z_len.addWidget(lineedit_zmin)
+        layout_z_len.addWidget(label_zmax   )
+        layout_z_len.addWidget(lineedit_zmax)
         
         layout_range.addWidget(label_title_range,stretch=1)
-        layout_range_val.addLayout(layout_x_range,stretch=1)
-        layout_range_val.addLayout(layout_y_range,stretch=1)
-        layout_range_val.addLayout(layout_z_range,stretch=1)
+        layout_range_val.addLayout(layout_x_len,stretch=1)
+        layout_range_val.addLayout(layout_y_len,stretch=1)
+        layout_range_val.addLayout(layout_z_len,stretch=1)
         layout_range.addLayout(layout_range_val)
 
         widget_temp_range = QtWidgets.QWidget()        
@@ -151,41 +170,45 @@ class setting_handler:
         return widget_temp_range
 
 
-    def widget_magnet_val(self,):
+    def build_widget_magnet_val(self,):
         label_title_range      = QtWidgets.QLabel("Magnet setting")
         
         layout_magnet = QtWidgets.QVBoxLayout()
         layout_magnet_val_1 = QtWidgets.QHBoxLayout()
         layout_magnet_val_2 = QtWidgets.QHBoxLayout()
-        layout_x_range = QtWidgets.QHBoxLayout()
-        layout_y_range = QtWidgets.QHBoxLayout()
-        layout_z_range = QtWidgets.QHBoxLayout()
+        layout_x_len = QtWidgets.QHBoxLayout()
+        layout_y_len = QtWidgets.QHBoxLayout()
+        layout_z_len = QtWidgets.QHBoxLayout()
         layout_br = QtWidgets.QHBoxLayout()
         
         label_xlen      = QtWidgets.QLabel("x length")
-        lineedit_xlen   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_magnet_len))
-        layout_x_range.addWidget(label_xlen   )
-        layout_x_range.addWidget(lineedit_xlen)
+        lineedit_magnet_xlen   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.x_magnet_len))
+        self.lineedit_magnet_xlen  =   lineedit_magnet_xlen
+        layout_x_len.addWidget(label_xlen   )
+        layout_x_len.addWidget(lineedit_magnet_xlen)
 
         label_ylen      = QtWidgets.QLabel("y length")
-        lineedit_ylen   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_magnet_len))
-        layout_y_range.addWidget(label_ylen   )
-        layout_y_range.addWidget(lineedit_ylen)
+        lineedit_magnet_ylen   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.y_magnet_len))
+        self.lineedit_magnet_ylen  =   lineedit_magnet_ylen
+        layout_y_len.addWidget(label_ylen   )
+        layout_y_len.addWidget(lineedit_magnet_ylen)
 
         label_zlen      = QtWidgets.QLabel("z length")
-        lineedit_zlen   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_magnet_len))
-        layout_z_range.addWidget(label_zlen   )
-        layout_z_range.addWidget(lineedit_zlen)
+        lineedit_magnet_zlen   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.z_magnet_len))
+        self.lineedit_magnet_zlen  =   lineedit_magnet_zlen
+        layout_z_len.addWidget(label_zlen   )
+        layout_z_len.addWidget(lineedit_magnet_zlen)
 
         label_br      = QtWidgets.QLabel("B_r")
         lineedit_br   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.B_r))
+        self.lineedit_br = lineedit_br
         layout_br.addWidget(label_br   )
         layout_br.addWidget(lineedit_br)
         
         layout_magnet.addWidget(label_title_range)
-        layout_magnet_val_1.addLayout(layout_x_range,stretch=1)
-        layout_magnet_val_1.addLayout(layout_y_range,stretch=1)
-        layout_magnet_val_2.addLayout(layout_z_range,stretch=1)
+        layout_magnet_val_1.addLayout(layout_x_len,stretch=1)
+        layout_magnet_val_1.addLayout(layout_y_len,stretch=1)
+        layout_magnet_val_2.addLayout(layout_z_len,stretch=1)
         layout_magnet_val_2.addLayout(layout_br,stretch=1)
         layout_magnet.addLayout(layout_magnet_val_1)
         layout_magnet.addLayout(layout_magnet_val_2)
@@ -195,37 +218,38 @@ class setting_handler:
         return widget_temp_magnet
 
 
-    def widget_view(self,):
+    def build_widget_view(self,):
         label_title_view      = QtWidgets.QLabel("View setting")
         
         layout_view = QtWidgets.QVBoxLayout()
-        layout_view_val_1 = QtWidgets.QHBoxLayout()
+        layout_range_val = QtWidgets.QHBoxLayout()
+        layout_view_val_1 = QtWidgets.QVBoxLayout()
+        layout_view_val_2 = QtWidgets.QVBoxLayout()
         
-        label_plane_choose      = QtWidgets.QLabel("Choose plane")
-        combo_plane_axis = QtWidgets.QComboBox()
-        combo_plane_axis.addItems(["X","Y","Z"])
-        combo_plane_axis.setCurrentIndex(2) ## Default as "Z"
-        combo_plane_axis.setStyleSheet("""
-            QComboBox {
-                min-width: 30px;
-                color: black;
-                border: 1px solid gray;
-                padding: 5px;
-            }
-        """)
-        combo_plane_axis.currentTextChanged.connect(lambda text: setattr(self,'plane_axis', text))
-        plane_axis =  combo_plane_axis.itemText(0)
-
-        label_equal = QtWidgets.QLabel(" = ")
-        lineedit_axis_val   = QtWidgets.QLineEdit("0")
-
-        layout_view_val_1.addWidget(label_plane_choose)
-        layout_view_val_1.addWidget(combo_plane_axis)
-        layout_view_val_1.addWidget(label_equal)
-        layout_view_val_1.addWidget(lineedit_axis_val)
         
+        label_x_equal      = QtWidgets.QLabel("x = ")
+        lineedit_x_equal   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.sliceview_x))
+        self.lineedit_x_equal  =   lineedit_x_equal
+        layout_view_val_1.addWidget(label_x_equal   )
+        layout_view_val_2.addWidget(lineedit_x_equal)
+
+        label_y_equal      = QtWidgets.QLabel("y = ")
+        lineedit_y_equal   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.sliceview_y))
+        self.lineedit_y_equal  =   lineedit_y_equal
+        layout_view_val_1.addWidget(label_y_equal   )
+        layout_view_val_2.addWidget(lineedit_y_equal)
+
+        label_z_equal      = QtWidgets.QLabel("z = ")
+        lineedit_z_equal   = QtWidgets.QLineEdit("{}".format(self.internal_parameter.sliceview_z))
+        self.lineedit_z_equal  =   lineedit_z_equal
+        layout_view_val_1.addWidget(label_z_equal   )
+        layout_view_val_2.addWidget(lineedit_z_equal)
+
+
         layout_view.addWidget(label_title_view)
-        layout_view.addLayout(layout_view_val_1)
+        layout_range_val.addLayout(layout_view_val_1)
+        layout_range_val.addLayout(layout_view_val_2)
+        layout_view.addLayout(layout_range_val)
         
         widget_temp_view = QtWidgets.QWidget()        
         widget_temp_view.setLayout(layout_view)
@@ -285,22 +309,49 @@ class setting_handler:
         return button_range_save
 
 
+    def get_parameters(self):
+        internal_parameter = self.internal_parameter
+        widget_3d_range = self.widget_3d_range
+        widget_view_range = self.widget_view_range
+        widget_magnet_val = self.widget_magnet_val
+        widget_view = self.widget_view
+        
+        internal_parameter.x_3d_range = float(self.lineedit_3d_xrange.text())
+        internal_parameter.y_3d_range = float(self.lineedit_3d_yrange.text())
+        internal_parameter.z_3d_range = float(self.lineedit_3d_zrange.text())
 
+        internal_parameter.x_view_range_max    = float(self.lineedit_xmax.text())
+        internal_parameter.x_view_range_min    = float(self.lineedit_xmin.text())
+        internal_parameter.y_view_range_max    = float(self.lineedit_ymax.text())
+        internal_parameter.y_view_range_min    = float(self.lineedit_ymin.text())
+        internal_parameter.z_view_range_max    = float(self.lineedit_zmax.text())
+        internal_parameter.z_view_range_min    = float(self.lineedit_zmin.text())
 
+        internal_parameter.x_magnet_len = float(self.lineedit_magnet_xlen.text())
+        internal_parameter.y_magnet_len = float(self.lineedit_magnet_ylen.text())
+        internal_parameter.z_magnet_len = float(self.lineedit_magnet_zlen.text())
+        internal_parameter.B_r = float(self.lineedit_br.text())
 
-    # def func_set(self):
-    #     msg = QtWidgets.QMessageBox()
-    #     msg.setText("Applied (Not really)")
-    #     msg.setWindowTitle("Inform")
-    #     msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-    #     msg.exec()
+        internal_parameter.sliceview_x = float(self.lineedit_x_equal.text())
+        internal_parameter.sliceview_y = float(self.lineedit_y_equal.text())
+        internal_parameter.sliceview_z = float(self.lineedit_z_equal.text())
 
+        
+
+    def func_set(self):
+        self.get_parameters()
+        EventBus.emit(EventBus.SET_BUTTON_CLICKED)
+        
+        msg = QtWidgets.QMessageBox()
+        msg.setText("Applied (Not really)")
+        msg.setWindowTitle("Inform")
+        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+        msg.exec()
     
-    # def func_export(self):
-    #     msg = QtWidgets.QMessageBox()
-    #     msg.setText("Exported (Not really)")
-    #     msg.setWindowTitle("Inform")
-    #     msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-    #     msg.exec()
-
-
+    def func_export(self):
+        # EventBus.emit(EventBus.EXPORT_BUTTON_CLICKED)
+        msg = QtWidgets.QMessageBox()
+        msg.setText("Exported (Not really)")
+        msg.setWindowTitle("Inform")
+        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+        msg.exec()

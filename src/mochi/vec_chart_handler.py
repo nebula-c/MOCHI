@@ -4,14 +4,23 @@ from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 import numpy as np
+from mochi.EventBus import EventBus
+from mochi.internal_parameter import internal_parameter
 
 class vec_chart_handler(FigureCanvas):
     def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
         self.setParent(parent)
+        self.magnet_box = None
         self.ax = fig.add_subplot(111, projection='3d')
-        # self.plot_vector_field()
+        self.ax.set_xlabel('X',labelpad=0)
+        self.ax.set_ylabel('Y',labelpad=0)
+        self.ax.set_zlabel('Z',labelpad=0)
+        self.setMinimumSize(300, 300)
+
+        EventBus.subscribe(EventBus.SET_BUTTON_CLICKED,self.set_range)
+        EventBus.subscribe(EventBus.SET_BUTTON_CLICKED,self.SetMagnet)
 
 
     def plot_vector_field(self):
@@ -23,18 +32,26 @@ class vec_chart_handler(FigureCanvas):
         w = z * 0
 
         self.ax.quiver(x, y, z, u, v, w, length=15, normalize=True)
-        self.ax.set_xlim([-self.internal_parameter.x_3d_range/2,self.internal_parameter.x_3d_range/2])
-        self.ax.set_ylim([-self.internal_parameter.y_3d_range/2,self.internal_parameter.y_3d_range/2])
-        self.ax.set_zlim([-self.internal_parameter.z_3d_range/2,self.internal_parameter.z_3d_range/2])
+        self.ax.set_xlim([-internal_parameter.x_3d_range/2,internal_parameter.x_3d_range/2])
+        self.ax.set_ylim([-internal_parameter.y_3d_range/2,internal_parameter.y_3d_range/2])
+        self.ax.set_zlim([-internal_parameter.z_3d_range/2,internal_parameter.z_3d_range/2])
+
+    def set_range(self):
+        self.ax.set_xlim([-internal_parameter.x_3d_range/2,internal_parameter.x_3d_range/2])
+        self.ax.set_ylim([-internal_parameter.y_3d_range/2,internal_parameter.y_3d_range/2])
+        self.ax.set_zlim([-internal_parameter.z_3d_range/2,internal_parameter.z_3d_range/2])
+        self.ax.figure.canvas.draw()
 
     def SetParameters(self,parameter_input):
-        self.internal_parameter = parameter_input
+        internal_parameter = parameter_input
         
 
     def SetMagnet(self,):
-        dx = self.internal_parameter.x_magnet_len
-        dy = self.internal_parameter.y_magnet_len
-        dz = self.internal_parameter.z_magnet_len
+        if self.magnet_box is not None:
+            self.magnet_box.remove()
+        dx = internal_parameter.x_magnet_len
+        dy = internal_parameter.y_magnet_len
+        dz = internal_parameter.z_magnet_len
         x = 0 - dx/2
         y = 0 - dy/2
         z = 0 - dz/2
@@ -59,8 +76,8 @@ class vec_chart_handler(FigureCanvas):
             [vertices[j] for j in [4, 7, 3, 0]]
         ]
 
-        box = Poly3DCollection(faces, alpha=0.3, facecolors='cyan', edgecolors='black')
-        self.ax.add_collection3d(box)
+        self.magnet_box = Poly3DCollection(faces, alpha=0.3, facecolors='grey', edgecolors='black')
+        self.ax.add_collection3d(self.magnet_box)
 
     def refresh(self):
         self.SetMagnet()

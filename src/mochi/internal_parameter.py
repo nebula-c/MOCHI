@@ -32,3 +32,9 @@ class internal_parameter():
         self.B_r        = 6000              #
 
 
+        self.sliceview_x = 0                # mm
+        self.sliceview_y = 0                # mm
+        self.sliceview_z = 0                # mm
+
+
+internal_parameter = internal_parameter()
