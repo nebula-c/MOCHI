@@ -24,7 +24,6 @@ class MF_calculator:
             magnet_ymax =  self.y_magnet_len/2
             magnet_zmin = -self.z_magnet_len/2
             magnet_zmax =  self.z_magnet_len/2
-            dipole_num_x = self.dipole_num_x
             dipole_num_y = self.dipole_num_y
             dipole_num_z = self.dipole_num_z
 
@@ -55,7 +54,7 @@ class MF_calculator:
             start_time = time.time()
             total_steps = dipole_num_y * dipole_num_z
             current_step = 0
-            
+
             for y_dipole in np.linspace(magnet_ymin,magnet_ymax,dipole_num_y):
                 if dipole_num_y == 1:
                     y_dipole = (magnet_ymin + magnet_ymax)/2
@@ -116,7 +115,6 @@ class MF_calculator:
             self.mu0          = internal_parameter.mu0
             
             self.B_r          = internal_parameter.B_r
-            self.dipole_num_x = internal_parameter.dipole_num_x
             self.dipole_num_y = internal_parameter.dipole_num_y
             self.dipole_num_z = internal_parameter.dipole_num_z
             self.field_resolution = internal_parameter.field_resolution

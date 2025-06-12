@@ -19,8 +19,7 @@ class internal_parameter():
         self.y_3d_range    = 200           # mm
         self.z_3d_range    = 200          # mm
         
-        self.B_r        = 14800             #
-        self.dipole_num_x = 1             # count 
+        self.B_r        = 14800             # Gauss
         self.dipole_num_y = 10             # count 
         self.dipole_num_z = 10             # count 
         self.field_resolution = 1         # mm
