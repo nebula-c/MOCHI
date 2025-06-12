@@ -1,11 +1,44 @@
+import sys
 from PyQt6 import QtWidgets
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal,QTimer
 
-# from mochi.EventBus import EventBus
+from mochi.EventBus import EventBus
 from mochi import vec_chart_handler
 from mochi import axial_chart_handler
 from mochi import setting_handler
 from mochi.internal_parameter import internal_parameter
+from mochi.MF_calculator import MF_calculator
+from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QProgressBar
+
+
+class LoadingDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        EventBus.subscribe(EventBus.ASK_CALCULATION,self.run)
+        # EventBus.subscribe(EventBus.END_CALCULATION,self.close_loading)
+        EventBus.subscribe(EventBus.PROGRESS_UPDATE, self.update_progress)
+        self.setModal(True)
+    
+    def run(self):
+        self.setWindowTitle("Calculating...")
+        layout = QVBoxLayout()
+        self.label = QLabel("Running...")
+        layout.addWidget(self.label)
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 100)
+        layout.addWidget(self.progress_bar)
+        self.setLayout(layout)
+        QTimer.singleShot(0, self.show)
+
+    def update_progress(self, progress, elapsed_time, remaining_time):
+        self.progress_bar.setValue(int(progress))
+        self.label.setText(f"진행률: {progress:.2f}%\n"
+                       f"경과 시간: {elapsed_time:.1f}초\n"
+                       f"남은 시간 예상: {remaining_time:.1f}초")
+
+    def close_loading(self):
+        self.accept() 
+
 
 class Mochi_Monitor(QtWidgets.QMainWindow):
     def __init__(self,):
@@ -13,9 +46,9 @@ class Mochi_Monitor(QtWidgets.QMainWindow):
         self.axial_chart_handler = axial_chart_handler.axial_chart_handler()
         self.setting_handler = setting_handler.setting_handler()
         self.internal_parameter = internal_parameter
-        signal_setbutton = pyqtSignal()
 
         self.Basic_Framing()
+        self.myLoadingDialog = LoadingDialog()
 
     def Basic_Framing(self,):
         self.setWindowTitle("MOCHI")
@@ -51,9 +84,9 @@ class Mochi_Monitor(QtWidgets.QMainWindow):
 
 
         layout_settings = QtWidgets.QVBoxLayout()
-        self.setting_handler.SetParameters(self.internal_parameter)
+        # self.setting_handler.SetParameters(self.internal_parameter)
         widget_settings = self.setting_handler.widget_settings()
         self.layout.addWidget(widget_settings,stretch=1)
         
-
-
+        
+        

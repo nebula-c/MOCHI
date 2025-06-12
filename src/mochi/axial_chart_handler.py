@@ -1,10 +1,13 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from matplotlib.colors import LogNorm
 import numpy as np
+
 
 from mochi.EventBus import EventBus
 from mochi.internal_parameter import internal_parameter
+from mochi.DataStore import DataStore
 
 class HeatmapCanvas(FigureCanvas):
     def __init__(self, parent=None):
@@ -17,8 +20,9 @@ class HeatmapCanvas(FigureCanvas):
 
     def plot_test_heatmap(self):
         data = np.random.rand(100, 100)
-        heatmap = self.ax.imshow(data, cmap='viridis', interpolation='None')
-        self.figure.colorbar(heatmap, ax=self.ax)
+        # heatmap = self.ax.imshow(data, cmap='viridis', interpolation='None')
+        heatmap = self.ax.imshow(data, extent=[0,100,0,100], cmap='viridis', interpolation='None')
+        self.mycolorbar = self.figure.colorbar(heatmap, ax=self.ax)
 
     def set_xlim(self,xmin,xmax):
         self.ax.set_xlim(xmin, xmax)
@@ -34,8 +38,18 @@ class HeatmapCanvas(FigureCanvas):
         self.ax.set_ylabel(ytitle,labelpad=0)
 
     def refresh(self):
-        self.ax.set_aspect('equal')
+        self.ax.set_aspect('auto')
         self.ax.figure.canvas.draw()
+
+    def plot_heatmap(self,data, datarange=None):
+        self.mycolorbar.remove()
+        self.ax.cla()
+        heatmap = self.ax.imshow(data, extent=datarange, cmap='viridis', interpolation='None')
+        # heatmap = self.ax.imshow(data, norm=LogNorm(), extent=datarange, cmap='viridis', interpolation='None')
+        self.mycolorbar = self.figure.colorbar(heatmap, ax=self.ax)
+        heatmap.set_clim(vmin=-100, vmax=100)
+
+        self.refresh()
 
 class axial_chart_handler(FigureCanvas):
     def __init__(self,):
@@ -47,17 +61,28 @@ class axial_chart_handler(FigureCanvas):
         # self.y_chart.set_title("ZX (Y=0)")
         # self.z_chart.set_title("XY (Z=0)")
         self.update_title()
+        self.set_labels()
 
-        self.x_chart.set_axis_label("Y","Z")
-        self.y_chart.set_axis_label("Z","X")
-        self.z_chart.set_axis_label("X","Y")
+        
 
         EventBus.subscribe(EventBus.SET_BUTTON_CLICKED,self.refresh)
         EventBus.subscribe(EventBus.SET_BUTTON_CLICKED,self.update_title)
+        EventBus.subscribe(EventBus.END_CALCULATION,self.show_data)
 
     
     def SetParameters(self,parameter_input):
         internal_parameter = parameter_input
+
+    def set_labels(self):
+        self.x_chart.set_axis_label("Y","Z")
+        self.y_chart.set_axis_label("Z","X")
+        self.z_chart.set_axis_label("X","Y")
+
+        self.x_chart.refresh()
+        self.y_chart.refresh()
+        self.z_chart.refresh()
+        
+
 
     def refresh(self):
         x_view_range_max = internal_parameter.x_view_range_max
@@ -86,4 +111,67 @@ class axial_chart_handler(FigureCanvas):
         self.x_chart.refresh()
         self.y_chart.refresh()
         self.z_chart.refresh()
+
+    def show_data(self):
+        my_direction = "B_x"
+        # my_direction = "B_y"
+        # my_direction = "B_z"
+
+        vec_r = DataStore.vec_r
+        vec_B = DataStore.vec_B
+        len_x, len_y, len_z = DataStore.get_len_xyz()
+
+        
+        Bxyz_XY = []
+        Bxyz_YZ = []
+        Bxyz_ZX = []
+
+        XY_B = []
+        YZ_B = []
+        ZX_B = []
+
+        for i in range(len(vec_r)):
+            if vec_r[i][0] == 0:
+                Bxyz_YZ.append(vec_B[i])
+            if vec_r[i][1] == 0:
+                Bxyz_ZX.append(vec_B[i])
+            if vec_r[i][2] == 0:
+                Bxyz_XY.append(vec_B[i])
+
+        Bxyz_YZ = np.array(Bxyz_YZ)
+        Bxyz_ZX = np.array(Bxyz_ZX)
+        Bxyz_XY = np.array(Bxyz_XY)
+        
+
+        if my_direction == "B_x":
+            XY_B = Bxyz_XY[:,0]
+            YZ_B = Bxyz_YZ[:,0]
+            ZX_B = Bxyz_ZX[:,0]
+        if my_direction == "B_y":
+            XY_B = Bxyz_XY[:,1]
+            YZ_B = Bxyz_YZ[:,1]
+            ZX_B = Bxyz_ZX[:,1]
+        if my_direction == "B_z":
+            XY_B = Bxyz_XY[:,2]
+            YZ_B = Bxyz_YZ[:,2]
+            ZX_B = Bxyz_ZX[:,2]
+
+        XY_B = np.reshape(XY_B,(len_x,len_y)).T
+        YZ_B = np.reshape(YZ_B,(len_y,len_z)).T
+        ZX_B = np.reshape(ZX_B,(len_x,len_z))
+
+
+        x_3d_range_min = -internal_parameter.x_3d_range/2
+        x_3d_range_max =  internal_parameter.x_3d_range/2
+        y_3d_range_min = -internal_parameter.y_3d_range/2
+        y_3d_range_max =  internal_parameter.y_3d_range/2
+        z_3d_range_min = -internal_parameter.z_3d_range/2
+        z_3d_range_max =  internal_parameter.z_3d_range/2
+
+        self.x_chart.plot_heatmap(YZ_B,datarange=[y_3d_range_min,y_3d_range_max,z_3d_range_min,z_3d_range_max])
+        self.y_chart.plot_heatmap(ZX_B,datarange=[z_3d_range_min,z_3d_range_max,x_3d_range_min,x_3d_range_max])
+        self.z_chart.plot_heatmap(XY_B,datarange=[x_3d_range_min,x_3d_range_max,y_3d_range_min,y_3d_range_max])
+
+
+        self.set_labels()
 
