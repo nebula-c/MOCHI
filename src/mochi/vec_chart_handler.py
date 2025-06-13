@@ -24,14 +24,23 @@ class vec_chart_handler(FigureCanvas):
 
 
     def plot_vector_field(self):
-        x, y, z = np.meshgrid(np.arange(-100, 100, 50),
-                              np.arange(-100, 100, 50),
-                              np.arange(-100, 100, 50))
-        u = -y
-        v = x
-        w = z * 0
+        # y_temp = np.linspace(-internal_parameter.y_magnet_len/2,internal_parameter.y_magnet_len/2,internal_parameter.dipole_num_y)
+        # z_temp = np.linspace(-internal_parameter.z_magnet_len/2,internal_parameter.z_magnet_len/2,internal_parameter.dipole_num_z)
+        # x_temp = np.zeros_like(y_temp)
 
-        self.ax.quiver(x, y, z, u, v, w, length=15, normalize=True)
+        # x,y,z = np.meshgrid(x_temp,y_temp,z_temp)
+        # u = 1; v = 0; w = 0
+
+
+        # x, y, z = np.meshgrid(np.arange(-100, 100, 50),
+        #                       np.arange(-100, 100, 50),
+        #                       np.arange(-100, 100, 50))
+        # u = -y
+        # v = x
+        # w = z * 0
+        # self.ax.quiver(x, y, z, u, v, w, length=15, normalize=True)
+
+        self.ax.quiver(0,0,0, 1,0,0, length=30, normalize=True)
         self.ax.set_xlim([-internal_parameter.x_3d_range/2,internal_parameter.x_3d_range/2])
         self.ax.set_ylim([-internal_parameter.y_3d_range/2,internal_parameter.y_3d_range/2])
         self.ax.set_zlim([-internal_parameter.z_3d_range/2,internal_parameter.z_3d_range/2])

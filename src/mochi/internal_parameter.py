@@ -4,8 +4,8 @@ class internal_parameter():
     def __init__(self,):
         self.mu0 = 4 * np.pi * 1e-7         # Vacuum permeability in T·m/A
 
-        self.x_magnet_len      = 50               # mm
-        self.y_magnet_len      = 5                # mm
+        self.x_magnet_len      = 5                # mm
+        self.y_magnet_len      = 50               # mm
         self.z_magnet_len      = 25               # mm
 
         self.x_view_range_max    = 100           # mm
