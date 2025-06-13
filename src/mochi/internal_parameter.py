@@ -22,7 +22,7 @@ class internal_parameter():
         self.B_r        = 14800             # Gauss
         self.dipole_num_y = 10             # count 
         self.dipole_num_z = 10             # count 
-        self.field_resolution = 1         # mm
+        self.field_resolution = 10         # mm
 
 
         self.sliceview_x = 0                # mm

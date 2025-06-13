@@ -27,29 +27,52 @@ class MF_calculator:
             dipole_num_y = self.dipole_num_y
             dipole_num_z = self.dipole_num_z
 
-            x_3d_range_min = -self.x_3d_range/2
-            x_3d_range_max =  self.x_3d_range/2
-            y_3d_range_min = -self.y_3d_range/2
-            y_3d_range_max =  self.y_3d_range/2
-            z_3d_range_min = -self.z_3d_range/2
-            z_3d_range_max =  self.z_3d_range/2
+            # x_3d_range_min = -self.x_3d_range/2
+            # x_3d_range_max =  self.x_3d_range/2
+            # y_3d_range_min = -self.y_3d_range/2
+            # y_3d_range_max =  self.y_3d_range/2
+            # z_3d_range_min = -self.z_3d_range/2
+            # z_3d_range_max =  self.z_3d_range/2
+            # field_resolution =  self.field_resolution
+
+            # ### 3D 격자 생성
+            # x_step = int(x_3d_range_max/field_resolution)
+            # y_step = int(y_3d_range_max/field_resolution)
+            # z_step = int(z_3d_range_max/field_resolution)
+            # x = np.linspace(-x_step*field_resolution, x_step*field_resolution, 2*x_step+1)
+            # y = np.linspace(-y_step*field_resolution, y_step*field_resolution, 2*y_step+1)
+            # z = np.linspace(-z_step*field_resolution, z_step*field_resolution, 2*z_step+1)
+            # X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
+            # r = np.stack([X, Y, Z], axis=-1)
+            # r = np.reshape(r,(len(x)*len(y)*len(z),3))
+            
+            
+            
+            
             field_resolution =  self.field_resolution
 
             ### 3D 격자 생성
-            x_step = int(x_3d_range_max/field_resolution)
-            y_step = int(y_3d_range_max/field_resolution)
-            z_step = int(z_3d_range_max/field_resolution)
-            x = np.linspace(-x_step*field_resolution, x_step*field_resolution, 2*x_step+1)
-            y = np.linspace(-y_step*field_resolution, y_step*field_resolution, 2*y_step+1)
-            z = np.linspace(-z_step*field_resolution, z_step*field_resolution, 2*z_step+1)
+            x_step = int((self.x_view_range_max-self.x_view_range_min)/field_resolution)
+            y_step = int((self.y_view_range_max-self.y_view_range_min)/field_resolution)
+            z_step = int((self.z_view_range_max-self.z_view_range_min)/field_resolution)
+            x = np.linspace(self.x_view_range_min, self.x_view_range_max, x_step+1)
+            y = np.linspace(self.y_view_range_min, self.y_view_range_max, y_step+1)
+            z = np.linspace(self.z_view_range_min, self.z_view_range_max, z_step+1)
+            # x = np.linspace(-x_step*field_resolution, x_step*field_resolution, 2*x_step+1)
+            # y = np.linspace(-y_step*field_resolution, y_step*field_resolution, 2*y_step+1)
+            # z = np.linspace(-z_step*field_resolution, z_step*field_resolution, 2*z_step+1)
             X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
             r = np.stack([X, Y, Z], axis=-1)
             r = np.reshape(r,(len(x)*len(y)*len(z),3))
             
+            
+            
+            
+            
+            
+            
             DataStore.set_vec_r(r)
             DataStore.set_len_xyz(len(x),len(y),len(z))
-
-
             
             start_time = time.time()
             total_steps = dipole_num_y * dipole_num_z
@@ -126,6 +149,14 @@ class MF_calculator:
             self.x_3d_range   = internal_parameter.x_3d_range
             self.y_3d_range   = internal_parameter.y_3d_range
             self.z_3d_range   = internal_parameter.z_3d_range
+
+            self.x_view_range_max = internal_parameter.x_view_range_max
+            self.x_view_range_min = internal_parameter.x_view_range_min
+            self.y_view_range_max = internal_parameter.y_view_range_max
+            self.y_view_range_min = internal_parameter.y_view_range_min
+            self.z_view_range_max = internal_parameter.z_view_range_max
+            self.z_view_range_min = internal_parameter.z_view_range_min
+
 
     def __init__(self,):
         self.BGND_RUN = self.bgnd_run()

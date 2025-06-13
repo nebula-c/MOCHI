@@ -48,7 +48,7 @@ class HeatmapCanvas(FigureCanvas):
     def plot_heatmap(self,data, datarange=None):
         self.mycolorbar.remove()
         self.ax.cla()
-        self.heatmap = self.ax.imshow(data, extent=datarange, cmap='viridis', interpolation='None')
+        self.heatmap = self.ax.imshow(data, extent=datarange, cmap='viridis', interpolation='None',origin='lower')
         # heatmap = self.ax.imshow(data, norm=LogNorm(), extent=datarange, cmap='viridis', interpolation='None')
         self.mycolorbar = self.figure.colorbar(self.heatmap, ax=self.ax)
         self.heatmap.set_clim(vmin=-100, vmax=100)
@@ -60,6 +60,8 @@ class axial_chart_handler(FigureCanvas):
         self.x_chart = HeatmapCanvas()
         self.y_chart = HeatmapCanvas()
         self.z_chart = HeatmapCanvas()
+
+        self.get_parameters()
 
         # self.x_chart.set_title("YZ (X=0)")
         # self.y_chart.set_title("ZX (Y=0)")
@@ -73,9 +75,13 @@ class axial_chart_handler(FigureCanvas):
         EventBus.subscribe(EventBus.SET_BUTTON_CLICKED,self.update_title)
         EventBus.subscribe(EventBus.END_CALCULATION,self.show_data)
 
-    
-    def SetParameters(self,parameter_input):
-        internal_parameter = parameter_input
+    def get_parameters(self):
+        self.x_view_range_max = internal_parameter.x_view_range_max
+        self.x_view_range_min = internal_parameter.x_view_range_min
+        self.y_view_range_max = internal_parameter.y_view_range_max
+        self.y_view_range_min = internal_parameter.y_view_range_min
+        self.z_view_range_max = internal_parameter.z_view_range_max
+        self.z_view_range_min = internal_parameter.z_view_range_min
 
     def set_labels(self):
         self.x_chart.set_axis_label("Y","Z")
@@ -89,23 +95,17 @@ class axial_chart_handler(FigureCanvas):
 
 
     def refresh(self):
-        x_view_range_max = internal_parameter.x_view_range_max
-        x_view_range_min = internal_parameter.x_view_range_min
-        y_view_range_max = internal_parameter.y_view_range_max
-        y_view_range_min = internal_parameter.y_view_range_min
-        z_view_range_max = internal_parameter.z_view_range_max
-        z_view_range_min = internal_parameter.z_view_range_min
-        
         # self.x_chart.set_xlim(y_view_range_min,y_view_range_max)
         # self.x_chart.set_ylim(z_view_range_min,z_view_range_max)
         # self.y_chart.set_xlim(z_view_range_min,z_view_range_max)
         # self.y_chart.set_ylim(x_view_range_min,x_view_range_max)
         # self.z_chart.set_xlim(x_view_range_min,x_view_range_max)
         # self.z_chart.set_ylim(y_view_range_min,y_view_range_max)
+        self.get_parameters()
 
-        self.x_chart.set_newextent(y_view_range_min,y_view_range_max,z_view_range_min,z_view_range_max)
-        self.y_chart.set_newextent(z_view_range_min,z_view_range_max,x_view_range_min,x_view_range_max)
-        self.z_chart.set_newextent(x_view_range_min,x_view_range_max,y_view_range_min,y_view_range_max)
+        self.x_chart.set_newextent(self.y_view_range_min,self.y_view_range_max,self.z_view_range_min,self.z_view_range_max)
+        self.y_chart.set_newextent(self.z_view_range_min,self.z_view_range_max,self.x_view_range_min,self.x_view_range_max)
+        self.z_chart.set_newextent(self.x_view_range_min,self.x_view_range_max,self.y_view_range_min,self.y_view_range_max)
 
         self.x_chart.refresh()
         self.y_chart.refresh()
@@ -169,17 +169,23 @@ class axial_chart_handler(FigureCanvas):
         ZX_B = np.reshape(ZX_B,(len_x,len_z))
 
 
-        x_3d_range_min = -internal_parameter.x_3d_range/2
-        x_3d_range_max =  internal_parameter.x_3d_range/2
-        y_3d_range_min = -internal_parameter.y_3d_range/2
-        y_3d_range_max =  internal_parameter.y_3d_range/2
-        z_3d_range_min = -internal_parameter.z_3d_range/2
-        z_3d_range_max =  internal_parameter.z_3d_range/2
+        # x_3d_range_min = -internal_parameter.x_3d_range/2
+        # x_3d_range_max =  internal_parameter.x_3d_range/2
+        # y_3d_range_min = -internal_parameter.y_3d_range/2
+        # y_3d_range_max =  internal_parameter.y_3d_range/2
+        # z_3d_range_min = -internal_parameter.z_3d_range/2
+        # z_3d_range_max =  internal_parameter.z_3d_range/2
 
-        self.x_chart.plot_heatmap(YZ_B,datarange=[y_3d_range_min,y_3d_range_max,z_3d_range_min,z_3d_range_max])
-        self.y_chart.plot_heatmap(ZX_B,datarange=[z_3d_range_min,z_3d_range_max,x_3d_range_min,x_3d_range_max])
-        self.z_chart.plot_heatmap(XY_B,datarange=[x_3d_range_min,x_3d_range_max,y_3d_range_min,y_3d_range_max])
+        # self.x_chart.plot_heatmap(YZ_B,datarange=[y_3d_range_min,y_3d_range_max,z_3d_range_min,z_3d_range_max])
+        # self.y_chart.plot_heatmap(ZX_B,datarange=[z_3d_range_min,z_3d_range_max,x_3d_range_min,x_3d_range_max])
+        # self.z_chart.plot_heatmap(XY_B,datarange=[x_3d_range_min,x_3d_range_max,y_3d_range_min,y_3d_range_max])
 
 
+
+        self.x_chart.plot_heatmap(YZ_B,datarange=[self.y_view_range_min,self.y_view_range_max,self.z_view_range_min,self.z_view_range_max])
+        self.y_chart.plot_heatmap(ZX_B,datarange=[self.z_view_range_min,self.z_view_range_max,self.x_view_range_min,self.x_view_range_max])
+        self.z_chart.plot_heatmap(XY_B,datarange=[self.x_view_range_min,self.x_view_range_max,self.y_view_range_min,self.y_view_range_max])
+
+        self.refresh()
         self.set_labels()
 
