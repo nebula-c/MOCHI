@@ -29,5 +29,7 @@ class internal_parameter():
         self.sliceview_y = 0                # mm
         self.sliceview_z = 0                # mm
 
+        self.target_direction = "B_x"
+
 
 internal_parameter = internal_parameter()

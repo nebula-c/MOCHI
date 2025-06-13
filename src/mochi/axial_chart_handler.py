@@ -24,6 +24,7 @@ class HeatmapCanvas(FigureCanvas):
         # self.heatmap = self.ax.imshow(data, extent=[-100,100,-100,100], cmap='viridis', interpolation='None')
         self.mycolorbar = self.figure.colorbar(self.heatmap, ax=self.ax)
 
+
     def set_xlim(self,xmin,xmax):
         self.ax.set_xlim(xmin, xmax)
 
@@ -39,7 +40,7 @@ class HeatmapCanvas(FigureCanvas):
 
     def set_axis_label(self,xtitle,ytitle):
         self.ax.set_xlabel(xtitle,labelpad=0)
-        self.ax.set_ylabel(ytitle,labelpad=0)
+        self.ax.set_ylabel(ytitle,labelpad=-10)
 
     def refresh(self):
         self.ax.set_aspect('auto')
@@ -52,6 +53,7 @@ class HeatmapCanvas(FigureCanvas):
         # heatmap = self.ax.imshow(data, norm=LogNorm(), extent=datarange, cmap='viridis', interpolation='None')
         self.mycolorbar = self.figure.colorbar(self.heatmap, ax=self.ax)
         self.heatmap.set_clim(vmin=-100, vmax=100)
+        self.mycolorbar.set_label("Gauss (Max: 100G)",rotation=270)
 
         self.refresh()
 
@@ -84,9 +86,9 @@ class axial_chart_handler(FigureCanvas):
         self.z_view_range_min = internal_parameter.z_view_range_min
 
     def set_labels(self):
-        self.x_chart.set_axis_label("Y","Z")
-        self.y_chart.set_axis_label("Z","X")
-        self.z_chart.set_axis_label("X","Y")
+        self.x_chart.set_axis_label("Y(mm)","Z(mm)")
+        self.y_chart.set_axis_label("Z(mm)","X(mm)")
+        self.z_chart.set_axis_label("X(mm)","Y(mm)")
 
         self.x_chart.refresh()
         self.y_chart.refresh()
@@ -112,16 +114,17 @@ class axial_chart_handler(FigureCanvas):
         self.z_chart.refresh()
 
     def update_title(self):
-        self.x_chart.set_title("YZ (X={})".format(internal_parameter.sliceview_x))
-        self.y_chart.set_title("ZX (Y={})".format(internal_parameter.sliceview_y))
-        self.z_chart.set_title("XY (Z={})".format(internal_parameter.sliceview_z))
+        self.x_chart.set_title("{} @ plane_YZ(X={} mm)".format(internal_parameter.target_direction,internal_parameter.sliceview_x))
+        self.y_chart.set_title("{} @ plane_ZX(Y={} mm)".format(internal_parameter.target_direction,internal_parameter.sliceview_y))
+        self.z_chart.set_title("{} @ plane_XY(Z={} mm)".format(internal_parameter.target_direction,internal_parameter.sliceview_z))
 
         self.x_chart.refresh()
         self.y_chart.refresh()
         self.z_chart.refresh()
 
     def show_data(self):
-        my_direction = "B_x"
+        my_direction = internal_parameter.target_direction
+        # my_direction = "B_x"
         # my_direction = "B_y"
         # my_direction = "B_z"
 
@@ -151,6 +154,7 @@ class axial_chart_handler(FigureCanvas):
         Bxyz_XY = np.array(Bxyz_XY)
         
 
+        print(my_direction)
         if my_direction == "B_x":
             XY_B = Bxyz_XY[:,0]
             YZ_B = Bxyz_YZ[:,0]
@@ -188,4 +192,5 @@ class axial_chart_handler(FigureCanvas):
 
         self.refresh()
         self.set_labels()
+        self.update_title()
 

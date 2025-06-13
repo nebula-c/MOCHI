@@ -54,11 +54,13 @@ class Mochi_Monitor(QtWidgets.QMainWindow):
 
     def Basic_Framing(self,):
         self.setWindowTitle("MOCHI")
+        # self.setGeometry(0, 100, 1300, 700)
         self.setGeometry(100, 100, 1200, 700)
 
         self.widget_central = QtWidgets.QWidget()
         self.setCentralWidget(self.widget_central)
         self.layout = QtWidgets.QHBoxLayout(self.widget_central)
+        self.layout.setContentsMargins(0, 0, 0, 0)  
         layout_charts = QtWidgets.QVBoxLayout()
         self.widget_central.setStyleSheet("background-color: white;")
 

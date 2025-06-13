@@ -143,7 +143,7 @@ class setting_handler:
         layout_z_len.addWidget(lineedit_zmin)
         layout_z_len.addWidget(label_zmax   )
         layout_z_len.addWidget(lineedit_zmax)
-        
+
         layout_range.addWidget(label_title_range,stretch=1)
         layout_range_val.addLayout(layout_x_len,stretch=1)
         layout_range_val.addLayout(layout_y_len,stretch=1)
@@ -231,6 +231,23 @@ class setting_handler:
         layout_view_val_2.addWidget(lineedit_z_equal)
 
 
+        label_B_dir      = QtWidgets.QLabel("B-direction")
+        self.combomox_B_dir = QtWidgets.QComboBox()
+        self.combomox_B_dir.addItems(["B_x","B_y","B_z"])
+        self.combomox_B_dir.setStyleSheet("""
+            QComboBox {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                padding: 5px;
+            }
+        """)
+        layout_view_val_1.addWidget(label_B_dir   )
+        layout_view_val_2.addWidget(self.combomox_B_dir)
+
+        
+
+
         layout_view.addWidget(label_title_view)
         layout_range_val.addLayout(layout_view_val_1)
         layout_range_val.addLayout(layout_view_val_2)
@@ -315,7 +332,7 @@ class setting_handler:
         return button_range_save
 
 
-    def get_parameters(self):
+    def set_parameters(self):
         # widget_3d_range = self.widget_3d_range
         # widget_view_range = self.widget_view_range
         # widget_magnet_val = self.widget_magnet_val
@@ -341,6 +358,8 @@ class setting_handler:
         internal_parameter.sliceview_y = float(self.lineedit_y_equal.text())
         internal_parameter.sliceview_z = float(self.lineedit_z_equal.text())
 
+        internal_parameter.target_direction =  self.combomox_B_dir.currentText()
+
         
 
     def func_run(self):
@@ -355,7 +374,7 @@ class setting_handler:
 
         
     def func_set(self):
-        self.get_parameters()
+        self.set_parameters()
         if self.is_min_max_right():
             EventBus.emit(EventBus.SET_BUTTON_CLICKED)
             msg = QtWidgets.QMessageBox()
@@ -413,6 +432,9 @@ class setting_handler:
         if internal_parameter.sliceview_y != float(self.lineedit_y_equal.text()):
             return False
         if internal_parameter.sliceview_z != float(self.lineedit_z_equal.text()):
+            return False
+
+        if internal_parameter.target_direction != self.combomox_B_dir.currentText():
             return False
         
         return True
