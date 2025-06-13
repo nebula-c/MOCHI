@@ -6,6 +6,7 @@ from mochi.EventBus import EventBus
 from mochi import vec_chart_handler
 from mochi import axial_chart_handler
 from mochi import setting_handler
+from mochi import file_saver
 from mochi.internal_parameter import internal_parameter
 from mochi.MF_calculator import MF_calculator
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QProgressBar
@@ -46,6 +47,7 @@ class Mochi_Monitor(QtWidgets.QMainWindow):
         self.axial_chart_handler = axial_chart_handler.axial_chart_handler()
         self.setting_handler = setting_handler.setting_handler()
         self.internal_parameter = internal_parameter
+        self.file_saver = file_saver.file_saver()
 
         self.Basic_Framing()
         self.myLoadingDialog = LoadingDialog()

@@ -360,26 +360,20 @@ class setting_handler:
     def func_run(self):
         EventBus.emit(EventBus.ASK_CALCULATION)
         
-        # msg = QtWidgets.QMessageBox()
-        # msg.setText("Applied (Not really)")
-        # msg.setWindowTitle("Inform")
-        # msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-        # msg.exec()
-
     def func_set(self):
         self.get_parameters()
         EventBus.emit(EventBus.SET_BUTTON_CLICKED)
-        # msg = QtWidgets.QMessageBox()
-        # msg.setText("Applied (Not really)")
-        # msg.setWindowTitle("Inform")
-        # msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-        # msg.exec()
+        msg = QtWidgets.QMessageBox()
+        msg.setText("Applied")
+        msg.setWindowTitle("Inform")
+        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+        msg.exec()
 
     
     def func_export(self):
-        # EventBus.emit(EventBus.EXPORT_BUTTON_CLICKED)
+        EventBus.emit(EventBus.EXPORT_BUTTON_CLICKED)
         msg = QtWidgets.QMessageBox()
-        msg.setText("Exported (Not really)")
+        msg.setText("Exported")
         msg.setWindowTitle("Inform")
         msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
         msg.exec()

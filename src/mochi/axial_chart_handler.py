@@ -117,8 +117,8 @@ class axial_chart_handler(FigureCanvas):
         # my_direction = "B_y"
         # my_direction = "B_z"
 
-        vec_r = DataStore.vec_r
-        vec_B = DataStore.vec_B
+        vec_r = DataStore.get_vec_r()
+        vec_B = DataStore.get_vec_B()
         len_x, len_y, len_z = DataStore.get_len_xyz()
 
         
