@@ -344,7 +344,7 @@ class setting_handler:
         
 
     def func_run(self):
-        if self.is_set():
+        if self.is_set():            
             EventBus.emit(EventBus.ASK_CALCULATION)
         else:
             msg = QtWidgets.QMessageBox()
@@ -356,13 +356,19 @@ class setting_handler:
         
     def func_set(self):
         self.get_parameters()
-        EventBus.emit(EventBus.SET_BUTTON_CLICKED)
-        msg = QtWidgets.QMessageBox()
-        msg.setText("Applied")
-        msg.setWindowTitle("Inform")
-        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-        msg.exec()
-
+        if self.is_min_max_right():
+            EventBus.emit(EventBus.SET_BUTTON_CLICKED)
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Applied")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Please check min & max values")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
     
     def func_export(self):
         EventBus.emit(EventBus.EXPORT_BUTTON_CLICKED)
@@ -410,3 +416,12 @@ class setting_handler:
             return False
         
         return True
+
+    def is_min_max_right(self):
+        if internal_parameter.x_view_range_max < internal_parameter.x_view_range_min:
+            return False
+        if internal_parameter.y_view_range_max < internal_parameter.y_view_range_min:
+            return False
+        if internal_parameter.z_view_range_max < internal_parameter.z_view_range_min:
+            return False
+        return True 
