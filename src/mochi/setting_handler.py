@@ -5,18 +5,6 @@ from mochi.EventBus import EventBus
 from mochi.internal_parameter import internal_parameter
 
 class setting_handler:
-    def __init__(self,):
-        self.xmin   =   -100
-        self.xmax   =    100
-        self.ymin   =   -100
-        self.ymax   =    100
-        self.zmin   =   -100
-        self.zmax   =    100
-        self.lineedit_magnet_xlen = None
-        self.lineedit_magnet_ylen = None
-        self.lineedit_magnet_zlen = None
-        
-
     def widget_settings(self,):
         self.widget_3d_range = self.build_widget_3d_range()
         self.widget_view_range = self.build_widget_view_range()
@@ -278,8 +266,6 @@ class setting_handler:
             }
         """)
         return button_range_save
-
-    
 
 
     def set_buttons(self,):

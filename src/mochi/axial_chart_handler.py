@@ -20,15 +20,19 @@ class HeatmapCanvas(FigureCanvas):
 
     def plot_test_heatmap(self):
         data = np.random.rand(100, 100)
-        # heatmap = self.ax.imshow(data, cmap='viridis', interpolation='None')
-        heatmap = self.ax.imshow(data, extent=[0,100,0,100], cmap='viridis', interpolation='None')
-        self.mycolorbar = self.figure.colorbar(heatmap, ax=self.ax)
+        self.heatmap = self.ax.imshow(data, cmap='gray', interpolation='None')
+        # self.heatmap = self.ax.imshow(data, extent=[-100,100,-100,100], cmap='viridis', interpolation='None')
+        self.mycolorbar = self.figure.colorbar(self.heatmap, ax=self.ax)
 
     def set_xlim(self,xmin,xmax):
         self.ax.set_xlim(xmin, xmax)
 
     def set_ylim(self,ymin,ymax):
         self.ax.set_ylim(ymin, ymax)
+
+    def set_newextent(self,xmin,xmax,ymin,ymax):
+        self.heatmap.set_extent([xmin,xmax,ymin,ymax])
+
 
     def set_title(self,mytitle):
         self.ax.set_title(mytitle)
@@ -44,10 +48,10 @@ class HeatmapCanvas(FigureCanvas):
     def plot_heatmap(self,data, datarange=None):
         self.mycolorbar.remove()
         self.ax.cla()
-        heatmap = self.ax.imshow(data, extent=datarange, cmap='viridis', interpolation='None')
+        self.heatmap = self.ax.imshow(data, extent=datarange, cmap='viridis', interpolation='None')
         # heatmap = self.ax.imshow(data, norm=LogNorm(), extent=datarange, cmap='viridis', interpolation='None')
-        self.mycolorbar = self.figure.colorbar(heatmap, ax=self.ax)
-        heatmap.set_clim(vmin=-100, vmax=100)
+        self.mycolorbar = self.figure.colorbar(self.heatmap, ax=self.ax)
+        self.heatmap.set_clim(vmin=-100, vmax=100)
 
         self.refresh()
 
@@ -92,12 +96,16 @@ class axial_chart_handler(FigureCanvas):
         z_view_range_max = internal_parameter.z_view_range_max
         z_view_range_min = internal_parameter.z_view_range_min
         
-        self.x_chart.set_xlim(y_view_range_min,y_view_range_max)
-        self.x_chart.set_ylim(z_view_range_min,z_view_range_max)
-        self.y_chart.set_xlim(z_view_range_min,z_view_range_max)
-        self.y_chart.set_ylim(x_view_range_min,x_view_range_max)
-        self.z_chart.set_xlim(x_view_range_min,x_view_range_max)
-        self.z_chart.set_ylim(y_view_range_min,y_view_range_max)
+        # self.x_chart.set_xlim(y_view_range_min,y_view_range_max)
+        # self.x_chart.set_ylim(z_view_range_min,z_view_range_max)
+        # self.y_chart.set_xlim(z_view_range_min,z_view_range_max)
+        # self.y_chart.set_ylim(x_view_range_min,x_view_range_max)
+        # self.z_chart.set_xlim(x_view_range_min,x_view_range_max)
+        # self.z_chart.set_ylim(y_view_range_min,y_view_range_max)
+
+        self.x_chart.set_newextent(y_view_range_min,y_view_range_max,z_view_range_min,z_view_range_max)
+        self.y_chart.set_newextent(z_view_range_min,z_view_range_max,x_view_range_min,x_view_range_max)
+        self.z_chart.set_newextent(x_view_range_min,x_view_range_max,y_view_range_min,y_view_range_max)
 
         self.x_chart.refresh()
         self.y_chart.refresh()
