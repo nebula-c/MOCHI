@@ -316,10 +316,10 @@ class setting_handler:
 
 
     def get_parameters(self):
-        widget_3d_range = self.widget_3d_range
-        widget_view_range = self.widget_view_range
-        widget_magnet_val = self.widget_magnet_val
-        widget_view = self.widget_view
+        # widget_3d_range = self.widget_3d_range
+        # widget_view_range = self.widget_view_range
+        # widget_magnet_val = self.widget_magnet_val
+        # widget_view = self.widget_view
         
         internal_parameter.x_3d_range = float(self.lineedit_3d_xrange.text())
         internal_parameter.y_3d_range = float(self.lineedit_3d_yrange.text())
@@ -344,7 +344,15 @@ class setting_handler:
         
 
     def func_run(self):
-        EventBus.emit(EventBus.ASK_CALCULATION)
+        if self.is_set():
+            EventBus.emit(EventBus.ASK_CALCULATION)
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Please press 'Set' button before run")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
+
         
     def func_set(self):
         self.get_parameters()
@@ -363,3 +371,42 @@ class setting_handler:
         msg.setWindowTitle("Inform")
         msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
         msg.exec()
+
+    def is_set(self):
+        if internal_parameter.x_3d_range != float(self.lineedit_3d_xrange.text()):
+            return False
+        if internal_parameter.y_3d_range != float(self.lineedit_3d_yrange.text()):
+            return False
+        if internal_parameter.z_3d_range != float(self.lineedit_3d_zrange.text()):
+            return False
+
+        if internal_parameter.x_view_range_max != float(self.lineedit_xmax.text()):
+            return False
+        if internal_parameter.x_view_range_min != float(self.lineedit_xmin.text()):
+            return False
+        if internal_parameter.y_view_range_max != float(self.lineedit_ymax.text()):
+            return False
+        if internal_parameter.y_view_range_min != float(self.lineedit_ymin.text()):
+            return False
+        if internal_parameter.z_view_range_max != float(self.lineedit_zmax.text()):
+            return False
+        if internal_parameter.z_view_range_min != float(self.lineedit_zmin.text()):
+            return False
+
+        if internal_parameter.x_magnet_len != float(self.lineedit_magnet_xlen.text()):
+            return False
+        if internal_parameter.y_magnet_len != float(self.lineedit_magnet_ylen.text()):
+            return False
+        if internal_parameter.z_magnet_len != float(self.lineedit_magnet_zlen.text()):
+            return False
+        if internal_parameter.B_r != float(self.lineedit_br.text()):
+            return False
+
+        if internal_parameter.sliceview_x != float(self.lineedit_x_equal.text()):
+            return False
+        if internal_parameter.sliceview_y != float(self.lineedit_y_equal.text()):
+            return False
+        if internal_parameter.sliceview_z != float(self.lineedit_z_equal.text()):
+            return False
+        
+        return True
