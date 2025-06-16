@@ -75,7 +75,7 @@ class axial_chart_handler(FigureCanvas):
 
         EventBus.subscribe(EventBus.SET_BUTTON_CLICKED,self.refresh)
         EventBus.subscribe(EventBus.SET_BUTTON_CLICKED,self.update_title)
-        EventBus.subscribe(EventBus.END_CALCULATION,self.show_data)
+        EventBus.subscribe(EventBus.SHOW_PLOT,self.show_data)
 
     def get_parameters(self):
         self.x_view_range_max = internal_parameter.x_view_range_max
@@ -141,36 +141,57 @@ class axial_chart_handler(FigureCanvas):
         YZ_B = []
         ZX_B = []
 
+        target_plane_X = internal_parameter.sliceview_x
+        target_plane_Y = internal_parameter.sliceview_y
+        target_plane_Z = internal_parameter.sliceview_z
+
+
+        x_step = int((internal_parameter.x_view_range_max-internal_parameter.x_view_range_min)/internal_parameter.field_resolution)
+        y_step = int((internal_parameter.y_view_range_max-internal_parameter.y_view_range_min)/internal_parameter.field_resolution)
+        z_step = int((internal_parameter.z_view_range_max-internal_parameter.z_view_range_min)/internal_parameter.field_resolution)
+        x_lattice = np.linspace(internal_parameter.x_view_range_min, internal_parameter.x_view_range_max, x_step+1)
+        y_lattice = np.linspace(internal_parameter.y_view_range_min, internal_parameter.y_view_range_max, y_step+1)
+        z_lattice = np.linspace(internal_parameter.z_view_range_min, internal_parameter.z_view_range_max, z_step+1)
+        
+        if target_plane_X in x_lattice : is_get_YZ = True
+        else : is_get_YZ = False
+        if target_plane_Y in y_lattice : is_get_ZX = True
+        else : is_get_ZX = False
+        if target_plane_Z in z_lattice : is_get_XY = True
+        else : is_get_XY = False
+
         for i in range(len(vec_r)):
-            if vec_r[i][0] == 0:
-                Bxyz_YZ.append(vec_B[i])
-            if vec_r[i][1] == 0:
-                Bxyz_ZX.append(vec_B[i])
-            if vec_r[i][2] == 0:
-                Bxyz_XY.append(vec_B[i])
+            if(is_get_YZ):
+                if vec_r[i][0] == target_plane_X:
+                    Bxyz_YZ.append(vec_B[i])
+            if(is_get_ZX):
+                if vec_r[i][1] == target_plane_Y:
+                    Bxyz_ZX.append(vec_B[i])
+            if(is_get_XY):
+                if vec_r[i][2] == target_plane_Z:
+                    Bxyz_XY.append(vec_B[i])
 
         Bxyz_YZ = np.array(Bxyz_YZ)
         Bxyz_ZX = np.array(Bxyz_ZX)
         Bxyz_XY = np.array(Bxyz_XY)
         
 
-        print(my_direction)
         if my_direction == "B_x":
-            XY_B = Bxyz_XY[:,0]
-            YZ_B = Bxyz_YZ[:,0]
-            ZX_B = Bxyz_ZX[:,0]
+            if(is_get_XY): XY_B = Bxyz_XY[:,0]
+            if(is_get_YZ): YZ_B = Bxyz_YZ[:,0]
+            if(is_get_ZX): ZX_B = Bxyz_ZX[:,0]
         if my_direction == "B_y":
-            XY_B = Bxyz_XY[:,1]
-            YZ_B = Bxyz_YZ[:,1]
-            ZX_B = Bxyz_ZX[:,1]
+            if(is_get_XY): XY_B = Bxyz_XY[:,1]
+            if(is_get_YZ): YZ_B = Bxyz_YZ[:,1]
+            if(is_get_ZX): ZX_B = Bxyz_ZX[:,1]
         if my_direction == "B_z":
-            XY_B = Bxyz_XY[:,2]
-            YZ_B = Bxyz_YZ[:,2]
-            ZX_B = Bxyz_ZX[:,2]
+            if(is_get_XY): XY_B = Bxyz_XY[:,2]
+            if(is_get_YZ): YZ_B = Bxyz_YZ[:,2]
+            if(is_get_ZX): ZX_B = Bxyz_ZX[:,2]
 
-        XY_B = np.reshape(XY_B,(len_x,len_y)).T
-        YZ_B = np.reshape(YZ_B,(len_y,len_z)).T
-        ZX_B = np.reshape(ZX_B,(len_x,len_z))
+        if(is_get_XY): XY_B = np.reshape(XY_B,(len_x,len_y)).T
+        if(is_get_YZ): YZ_B = np.reshape(YZ_B,(len_y,len_z)).T
+        if(is_get_ZX): ZX_B = np.reshape(ZX_B,(len_x,len_z))
 
 
         # x_3d_range_min = -internal_parameter.x_3d_range/2
@@ -186,9 +207,9 @@ class axial_chart_handler(FigureCanvas):
 
 
 
-        self.x_chart.plot_heatmap(YZ_B,datarange=[self.y_view_range_min,self.y_view_range_max,self.z_view_range_min,self.z_view_range_max])
-        self.y_chart.plot_heatmap(ZX_B,datarange=[self.z_view_range_min,self.z_view_range_max,self.x_view_range_min,self.x_view_range_max])
-        self.z_chart.plot_heatmap(XY_B,datarange=[self.x_view_range_min,self.x_view_range_max,self.y_view_range_min,self.y_view_range_max])
+        if(is_get_YZ): self.x_chart.plot_heatmap(YZ_B,datarange=[self.y_view_range_min,self.y_view_range_max,self.z_view_range_min,self.z_view_range_max])
+        if(is_get_ZX): self.y_chart.plot_heatmap(ZX_B,datarange=[self.z_view_range_min,self.z_view_range_max,self.x_view_range_min,self.x_view_range_max])
+        if(is_get_XY): self.z_chart.plot_heatmap(XY_B,datarange=[self.x_view_range_min,self.x_view_range_max,self.y_view_range_min,self.y_view_range_max])
 
         self.refresh()
         self.set_labels()

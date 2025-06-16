@@ -33,12 +33,20 @@ class LoadingDialog(QDialog):
 
     def update_progress(self, progress, elapsed_time, remaining_time):
         self.progress_bar.setValue(int(progress))
-        self.label.setText(f"진행률: {progress:.2f}%\n"
-                       f"경과 시간: {elapsed_time:.1f}초\n"
-                       f"남은 시간 예상: {remaining_time:.1f}초")
+        self.label.setText(f"progress: {progress:.2f}%\n"
+                       f"elapsed time: {elapsed_time:.1f}초\n"
+                       f"remaining time: {remaining_time:.1f}초")
+        
+        if remaining_time == 0:
+            QTimer.singleShot(0, self.close_loading)
 
     def close_loading(self):
         self.accept() 
+        msg = QtWidgets.QMessageBox()
+        msg.setText("Done, export CSV file or press 'View' button to see field")
+        msg.setWindowTitle("Inform")
+        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+        msg.exec()
 
 
 class Mochi_Monitor(QtWidgets.QMainWindow):
@@ -68,7 +76,7 @@ class Mochi_Monitor(QtWidgets.QMainWindow):
         self.layout_chart_down = QtWidgets.QHBoxLayout()
         layout_charts.addLayout(self.layout_chart_up)
         layout_charts.addLayout(self.layout_chart_down)
-        self.layout.addLayout(layout_charts,stretch=5)
+        self.layout.addLayout(layout_charts,stretch=4)
 
         self.vec_chart_handler = vec_chart_handler.vec_chart_handler()
         # self.vec_chart_handler.SetParameters(self.internal_parameter)

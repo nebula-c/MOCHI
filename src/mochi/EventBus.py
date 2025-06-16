@@ -7,6 +7,7 @@ class EventBus:
     RUN_CALCULATION = "run_calculation"
     END_CALCULATION = "end_calculation"
     PROGRESS_UPDATE = "progress_update"
+    SHOW_PLOT = "show_plot"
 
     def __init__(self):
         self.listeners = {}
