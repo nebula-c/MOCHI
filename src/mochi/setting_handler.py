@@ -120,7 +120,7 @@ class setting_handler:
 
 
     def build_widget_view_range(self,):
-        label_title_range      = QtWidgets.QLabel("View range")
+        label_title_range      = QtWidgets.QLabel("View range (mm)")
         
         layout_range = QtWidgets.QVBoxLayout()
         layout_range_val = QtWidgets.QVBoxLayout()
@@ -181,7 +181,7 @@ class setting_handler:
 
 
     def build_widget_magnet_val(self,):
-        label_title_range      = QtWidgets.QLabel("Magnet setting")
+        label_title_range      = QtWidgets.QLabel("Magnet setting (mm)")
         
         layout_magnet = QtWidgets.QVBoxLayout()
         layout_val_1 = QtWidgets.QHBoxLayout()
@@ -212,11 +212,18 @@ class setting_handler:
         layout_z_len.addWidget(label_zlen   )
         layout_z_len.addWidget(lineedit_magnet_zlen)
 
-        label_br      = QtWidgets.QLabel("B_r")
+        label_br      = QtWidgets.QLabel("B_r*")
         lineedit_br   = QtWidgets.QLineEdit("{}".format(internal_parameter.B_r))
         self.lineedit_br = lineedit_br
         layout_br.addWidget(label_br   )
         layout_br.addWidget(lineedit_br)
+        label_comment    = QtWidgets.QLabel("*: Remanence(Gauss)")
+        label_comment.setStyleSheet("""
+            color: #AAAAAA;
+            font-size: 10pt;
+            font-weight: bold;
+        """)
+
 
         label_section_title    = QtWidgets.QLabel("Number of dipoles")
         label_ydipole   = QtWidgets.QLabel("Y-axis")
@@ -238,6 +245,7 @@ class setting_handler:
         layout_magnet_val_2.addLayout(layout_br,stretch=1)
         layout_magnet.addLayout(layout_val_1)
         layout_magnet.addLayout(layout_magnet_val_2)
+        layout_magnet.addWidget(label_comment,stretch=1)
         # layout_magnet.addLayout(layout_y_dipole)
         # layout_magnet.addLayout(layout_z_dipole)
         layout_magnet.addWidget(label_section_title)
@@ -257,9 +265,9 @@ class setting_handler:
         layout_view_val_1 = QtWidgets.QVBoxLayout()
         layout_view_val_2 = QtWidgets.QVBoxLayout()
 
-        label_x_equal      = QtWidgets.QLabel("x = ")
-        label_y_equal      = QtWidgets.QLabel("y = ")
-        label_z_equal      = QtWidgets.QLabel("z = ")
+        label_x_equal      = QtWidgets.QLabel("x(mm) = ")
+        label_y_equal      = QtWidgets.QLabel("y(mm) = ")
+        label_z_equal      = QtWidgets.QLabel("z(mm) = ")
 
         layout_view_val_1.addWidget(label_x_equal)
         layout_view_val_1.addWidget(label_y_equal)
@@ -327,7 +335,7 @@ class setting_handler:
         return widget_temp_view
 
     def build_widget_view_clim(self,):
-        label_title_lim      = QtWidgets.QLabel("Colobar limit")
+        label_title_lim      = QtWidgets.QLabel("Colobar limit (G)")
         
         layout_lim = QtWidgets.QVBoxLayout()
         layout_lim_val = QtWidgets.QVBoxLayout()
