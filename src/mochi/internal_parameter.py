@@ -7,6 +7,9 @@ class internal_parameter():
         self.x_magnet_len      = 5                # mm
         self.y_magnet_len      = 50               # mm
         self.z_magnet_len      = 25               # mm
+        self.B_r        = 14800             # Gauss
+        self.dipole_num_y = 10             # count 
+        self.dipole_num_z = 10             # count 
 
         self.x_view_range_max    = 100           # mm
         self.x_view_range_min    = -100           # mm
@@ -14,22 +17,11 @@ class internal_parameter():
         self.y_view_range_min    = -100           # mm
         self.z_view_range_max    = 100           # mm
         self.z_view_range_min    = -100           # mm
-
-        self.x_3d_range    = 200           # mm
-        self.y_3d_range    = 200           # mm
-        self.z_3d_range    = 200          # mm
-        
-        self.B_r        = 14800             # Gauss
-        self.dipole_num_y = 10             # count 
-        self.dipole_num_z = 10             # count 
         self.field_resolution = 10         # mm
-
 
         self.sliceview_x = 0                # mm
         self.sliceview_y = 0                # mm
         self.sliceview_z = 0                # mm
-
         self.target_direction = "B_x"
-
 
 internal_parameter = internal_parameter()

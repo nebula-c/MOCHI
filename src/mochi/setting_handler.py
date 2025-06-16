@@ -11,11 +11,10 @@ class setting_handler:
         EventBus.subscribe(EventBus.END_CALCULATION,self.update_xyz_plane_combobox)
 
     def widget_settings(self,):
-        self.widget_3d_range = self.build_widget_3d_range()
+        # self.widget_3d_range = self.build_widget_3d_range()
         self.widget_view_range = self.build_widget_view_range()
         self.widget_magnet_val = self.build_widget_magnet_val()
         self.widget_view = self.build_widget_view()
-        self.widget_dipole_num = self.build_widget_dipole_num()
         
         layout_settings = QtWidgets.QVBoxLayout()
         layout_buttons = QtWidgets.QHBoxLayout()
@@ -28,24 +27,7 @@ class setting_handler:
         line1 = self.set_dot_line()
         layout_settings.addWidget(line1)
         layout_settings.addStretch()
-        
-        widget_3d_range = self.widget_3d_range
-        widget_3d_range.setContentsMargins(0, 0, 0, 0)
-        layout_settings.addWidget(widget_3d_range)
 
-
-        line2 = self.set_dot_line()
-        layout_settings.addWidget(line2)
-        layout_settings.addStretch()
-
-        widget_dipole_num = self.widget_dipole_num
-        widget_dipole_num.setContentsMargins(0, 0, 0, 0)
-        layout_settings.addWidget(widget_dipole_num)
-
-        line3 = self.set_dot_line()
-        layout_settings.addWidget(line3)
-        layout_settings.addStretch()
-        
         widget_view_range = self.widget_view_range
         widget_view_range.setContentsMargins(0, 0, 0, 0)
         layout_settings.addWidget(widget_view_range)
@@ -82,30 +64,41 @@ class setting_handler:
         label_title_range      = QtWidgets.QLabel("3D range (mm)")
         
         layout_range = QtWidgets.QVBoxLayout()
-        layout_range_val = QtWidgets.QHBoxLayout()
+        layout_range_val = QtWidgets.QVBoxLayout()
         layout_3d_xrange = QtWidgets.QHBoxLayout()
         layout_3d_yrange = QtWidgets.QHBoxLayout()
         layout_3d_zrange = QtWidgets.QHBoxLayout()
         
+        label_3d_xmin      = QtWidgets.QLabel("xmin")
+        self.lineedit_3d_xmin   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_3d_range_min))
+        layout_3d_xrange.addWidget(label_3d_xmin   )
+        layout_3d_xrange.addWidget(self.lineedit_3d_xmin)
 
-        label_xmax      = QtWidgets.QLabel("X")
-        self.lineedit_3d_xrange   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_3d_range))
-        lineedit_3d_xrange = self.lineedit_3d_xrange
-        layout_3d_xrange.addWidget(label_xmax   )
-        layout_3d_xrange.addWidget(lineedit_3d_xrange)
+        label_3d_xmax      = QtWidgets.QLabel("xmax")
+        self.lineedit_3d_xmax   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_3d_range_max))
+        layout_3d_xrange.addWidget(label_3d_xmax   )
+        layout_3d_xrange.addWidget(self.lineedit_3d_xmax)
 
-        label_ymax      = QtWidgets.QLabel("Y")
-        self.lineedit_3d_yrange   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_3d_range))
-        lineedit_3d_yrange = self.lineedit_3d_yrange
-        layout_3d_yrange.addWidget(label_ymax   )
-        layout_3d_yrange.addWidget(lineedit_3d_yrange)
+        label_ymin      = QtWidgets.QLabel("ymin")
+        self.lineedit_3d_ymin   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_3d_range_min))
+        layout_3d_yrange.addWidget(label_ymin   )
+        layout_3d_yrange.addWidget(self.lineedit_3d_ymin)
 
-        label_zmax      = QtWidgets.QLabel("Z")
-        self.lineedit_3d_zrange   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_3d_range))
-        lineedit_3d_zrange = self.lineedit_3d_zrange
-        layout_3d_zrange.addWidget(label_zmax   )
-        layout_3d_zrange.addWidget(lineedit_3d_zrange)
-        
+        label_3d_ymax      = QtWidgets.QLabel("ymax")
+        self.lineedit_3d_ymax   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_3d_range_max))
+        layout_3d_yrange.addWidget(label_3d_ymax   )
+        layout_3d_yrange.addWidget(self.lineedit_3d_ymax)
+
+        label_zmin      = QtWidgets.QLabel("zmin")
+        self.lineedit_3d_zmin   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_3d_range_min))
+        layout_3d_zrange.addWidget(label_zmin   )
+        layout_3d_zrange.addWidget(self.lineedit_3d_zmin)
+
+        label_3d_zmax      = QtWidgets.QLabel("zmax")
+        self.lineedit_3d_zmax   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_3d_range_max))
+        layout_3d_zrange.addWidget(label_3d_zmax   )
+        layout_3d_zrange.addWidget(self.lineedit_3d_zmax)
+
 
         layout_range.addWidget(label_title_range,stretch=1)
         layout_range_val.addLayout(layout_3d_xrange,stretch=1)
@@ -189,6 +182,9 @@ class setting_handler:
         layout_y_len = QtWidgets.QHBoxLayout()
         layout_z_len = QtWidgets.QHBoxLayout()
         layout_br = QtWidgets.QHBoxLayout()
+        layout_dipoles = QtWidgets.QHBoxLayout()
+        layout_y_dipole = QtWidgets.QHBoxLayout()
+        layout_z_dipole = QtWidgets.QHBoxLayout()
         
         label_xlen      = QtWidgets.QLabel("x length")
         lineedit_magnet_xlen   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_magnet_len))
@@ -213,6 +209,19 @@ class setting_handler:
         self.lineedit_br = lineedit_br
         layout_br.addWidget(label_br   )
         layout_br.addWidget(lineedit_br)
+
+        label_section_title    = QtWidgets.QLabel("Number of dipoles")
+        label_ydipole   = QtWidgets.QLabel("Y-axis")
+        lineedit_ydipole= QtWidgets.QLineEdit("{}".format(internal_parameter.dipole_num_y))
+        self.lineedit_ydipole  =   lineedit_ydipole
+        layout_dipoles.addWidget(label_ydipole   )
+        layout_dipoles.addWidget(lineedit_ydipole)
+
+        label_zdipole   = QtWidgets.QLabel("Z-axis")
+        lineedit_zdipole= QtWidgets.QLineEdit("{}".format(internal_parameter.dipole_num_z))
+        self.lineedit_zdipole  =   lineedit_zdipole
+        layout_dipoles.addWidget(label_zdipole   )
+        layout_dipoles.addWidget(lineedit_zdipole)
         
         layout_magnet.addWidget(label_title_range)
         layout_val_1.addLayout(layout_x_len,stretch=1)
@@ -221,41 +230,15 @@ class setting_handler:
         layout_magnet_val_2.addLayout(layout_br,stretch=1)
         layout_magnet.addLayout(layout_val_1)
         layout_magnet.addLayout(layout_magnet_val_2)
+        # layout_magnet.addLayout(layout_y_dipole)
+        # layout_magnet.addLayout(layout_z_dipole)
+        layout_magnet.addWidget(label_section_title)
+        layout_magnet.addLayout(layout_dipoles)
+        
         
         widget_temp_magnet = QtWidgets.QWidget()        
         widget_temp_magnet.setLayout(layout_magnet)
         return widget_temp_magnet
-
-
-    def build_widget_dipole_num(self,):
-        layout_dipole_num = QtWidgets.QVBoxLayout()
-        layout_val_1 = QtWidgets.QHBoxLayout()
-        layout_x_dipole = QtWidgets.QHBoxLayout()
-        layout_y_dipole = QtWidgets.QHBoxLayout()
-        layout_br = QtWidgets.QHBoxLayout()
-        
-        label_section_title    = QtWidgets.QLabel("Number of dipoles")
-        label_xdipole   = QtWidgets.QLabel("X-axis")
-        lineedit_xdipole= QtWidgets.QLineEdit("{}".format(internal_parameter.x_magnet_len))
-        self.lineedit_xdipole  =   lineedit_xdipole
-        layout_x_dipole.addWidget(label_xdipole   )
-        layout_x_dipole.addWidget(lineedit_xdipole)
-
-        label_ydipole   = QtWidgets.QLabel("Y-axis")
-        lineedit_ydipole= QtWidgets.QLineEdit("{}".format(internal_parameter.x_magnet_len))
-        self.lineedit_ydipole  =   lineedit_ydipole
-        layout_y_dipole.addWidget(label_ydipole   )
-        layout_y_dipole.addWidget(lineedit_ydipole)
-        
-        layout_dipole_num.addWidget(label_section_title)
-        layout_val_1.addLayout(layout_x_dipole,stretch=1)
-        layout_val_1.addLayout(layout_y_dipole,stretch=1)
-        layout_dipole_num.addLayout(layout_val_1)
-        
-        widget_temp_dipole_num = QtWidgets.QWidget()        
-        widget_temp_dipole_num.setLayout(layout_dipole_num)
-        return widget_temp_dipole_num
-
 
     def build_widget_view(self,):
         label_title_view      = QtWidgets.QLabel("View setting")
@@ -353,13 +336,13 @@ class setting_handler:
 
         while current_X <= internal_parameter.x_view_range_max:
             self.combomox_x_lattice.addItem(str(current_X))
-            current_X += x_step
+            current_X += internal_parameter.field_resolution
         while current_Y <= internal_parameter.y_view_range_max:
             self.combomox_y_lattice.addItem(str(current_Y))
-            current_Y += y_step
+            current_Y += internal_parameter.field_resolution
         while current_Z <= internal_parameter.z_view_range_max:
             self.combomox_z_lattice.addItem(str(current_Z))
-            current_Z += z_step
+            current_Z += internal_parameter.field_resolution
 
         n = self.combomox_x_lattice.count()
         middle_index = n // 2
@@ -372,8 +355,6 @@ class setting_handler:
         n = self.combomox_z_lattice.count()
         middle_index = n // 2
         self.combomox_z_lattice.setCurrentIndex(middle_index)
-
-        
 
     def set_dot_line(self,):
         line1 = QtWidgets.QFrame()
@@ -452,9 +433,6 @@ class setting_handler:
         """)
         return button_temp
 
-
-
-
     def export_buttons(self,):
         button_range_save = QtWidgets.QPushButton("Export")
         button_range_save.clicked.connect(lambda: self.func_export())
@@ -478,9 +456,13 @@ class setting_handler:
 
 
     def set_parameters(self):
-        internal_parameter.x_3d_range = float(self.lineedit_3d_xrange.text())
-        internal_parameter.y_3d_range = float(self.lineedit_3d_yrange.text())
-        internal_parameter.z_3d_range = float(self.lineedit_3d_zrange.text())
+        internal_parameter.x_magnet_len = float(self.lineedit_magnet_xlen.text())
+        internal_parameter.y_magnet_len = float(self.lineedit_magnet_ylen.text())
+        internal_parameter.z_magnet_len = float(self.lineedit_magnet_zlen.text())
+        internal_parameter.B_r = float(self.lineedit_br.text())
+
+        internal_parameter.dipole_num_y = float(self.lineedit_ydipole.text())
+        internal_parameter.dipole_num_z = float(self.lineedit_zdipole.text())
 
         internal_parameter.x_view_range_max    = float(self.lineedit_xmax.text())
         internal_parameter.x_view_range_min    = float(self.lineedit_xmin.text())
@@ -489,10 +471,7 @@ class setting_handler:
         internal_parameter.z_view_range_max    = float(self.lineedit_zmax.text())
         internal_parameter.z_view_range_min    = float(self.lineedit_zmin.text())
 
-        internal_parameter.x_magnet_len = float(self.lineedit_magnet_xlen.text())
-        internal_parameter.y_magnet_len = float(self.lineedit_magnet_ylen.text())
-        internal_parameter.z_magnet_len = float(self.lineedit_magnet_zlen.text())
-        internal_parameter.B_r = float(self.lineedit_br.text())
+        internal_parameter.field_resolution    = float(self.lineedit_field_resol.text())
 
     def set_view_parameter(self):
         internal_parameter.sliceview_x = float(self.combomox_x_lattice.currentText())
@@ -510,8 +489,7 @@ class setting_handler:
             msg.setWindowTitle("Inform")
             msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
             msg.exec()
-
-        
+ 
     def func_set(self):
         self.set_parameters()
         if self.is_min_max_right():
@@ -538,13 +516,6 @@ class setting_handler:
 
 
     def is_set(self):
-        if internal_parameter.x_3d_range != float(self.lineedit_3d_xrange.text()):
-            return False
-        if internal_parameter.y_3d_range != float(self.lineedit_3d_yrange.text()):
-            return False
-        if internal_parameter.z_3d_range != float(self.lineedit_3d_zrange.text()):
-            return False
-
         if internal_parameter.x_view_range_max != float(self.lineedit_xmax.text()):
             return False
         if internal_parameter.x_view_range_min != float(self.lineedit_xmin.text()):
@@ -565,6 +536,13 @@ class setting_handler:
         if internal_parameter.z_magnet_len != float(self.lineedit_magnet_zlen.text()):
             return False
         if internal_parameter.B_r != float(self.lineedit_br.text()):
+            return False
+
+        if internal_parameter.field_resolution != int(self.lineedit_field_resol.text()):
+            return False
+        if internal_parameter.dipole_num_y != float(self.lineedit_ydipole.text()):
+            return False
+        if internal_parameter.dipole_num_z != float(self.lineedit_zdipole.text()):
             return False
 
         return True

@@ -16,8 +16,6 @@ class LoadingDialog(QDialog):
     def __init__(self):
         super().__init__()
         EventBus.subscribe(EventBus.ASK_CALCULATION,self.run)
-        # EventBus.subscribe(EventBus.END_CALCULATION,self.close_loading)
-        EventBus.subscribe(EventBus.PROGRESS_UPDATE, self.update_progress)
         self.setModal(True)
     
     def run(self):
@@ -29,21 +27,28 @@ class LoadingDialog(QDialog):
         self.progress_bar.setRange(0, 100)
         layout.addWidget(self.progress_bar)
         self.setLayout(layout)
-        QTimer.singleShot(0, self.show)
+        self.show()
 
-    def update_progress(self, progress, elapsed_time, remaining_time):
-        self.progress_bar.setValue(int(progress))
-        self.label.setText(f"progress: {progress:.2f}%\n"
-                       f"elapsed time: {elapsed_time:.1f}초\n"
-                       f"remaining time: {remaining_time:.1f}초")
-        
-        if remaining_time == 0:
-            QTimer.singleShot(0, self.close_loading)
+        self.timer = QTimer()
+        self.timer.setInterval(500)  # 0.5 sec
+        self.timer.timeout.connect(self.update_progress)
+        self.timer.start()
+        self.show()
+
+    def update_progress(self):
+        self.progress_bar.setValue(int(MF_calculator.run_progress))
+        self.label.setText(f"progress: {MF_calculator.run_progress:.2f}%\n"
+                       f"elapsed time: {MF_calculator.run_elapsed_time:.1f}초\n"
+                       f"remaining time: {MF_calculator.run_remaining_time:.1f}초")
+
+        if MF_calculator.run_progress >= 100:
+            self.close_loading()
+            self.timer.stop()
 
     def close_loading(self):
         self.accept() 
         msg = QtWidgets.QMessageBox()
-        msg.setText("Done, export CSV file or press 'View' button to see field")
+        msg.setText("Done\n press 'Export' button to CSV file\n or press 'View' button")
         msg.setWindowTitle("Inform")
         msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
         msg.exec()

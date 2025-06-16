@@ -39,4 +39,11 @@ class DataStore:
     def get_len_xyz(self):
         return self.__lenx,self.__leny,self.__lenz
 
+    def clear(self):
+        self.__vec_r = None
+        self.__vec_B = None
+        self.__lenx = None
+        self.__leny = None
+        self.__lenz = None
+
 DataStore = DataStore()

@@ -41,14 +41,21 @@ class vec_chart_handler(FigureCanvas):
         # self.ax.quiver(x, y, z, u, v, w, length=15, normalize=True)
 
         self.ax.quiver(0,0,0, 1,0,0, length=30, normalize=True)
-        self.ax.set_xlim([-internal_parameter.x_3d_range/2,internal_parameter.x_3d_range/2])
-        self.ax.set_ylim([-internal_parameter.y_3d_range/2,internal_parameter.y_3d_range/2])
-        self.ax.set_zlim([-internal_parameter.z_3d_range/2,internal_parameter.z_3d_range/2])
+        # self.ax.set_xlim([-internal_parameter.x_3d_range/2,internal_parameter.x_3d_range/2])
+        # self.ax.set_ylim([-internal_parameter.y_3d_range/2,internal_parameter.y_3d_range/2])
+        # self.ax.set_zlim([-internal_parameter.z_3d_range/2,internal_parameter.z_3d_range/2])
+
+        self.ax.set_xlim([internal_parameter.x_view_range_min,internal_parameter.x_view_range_max])
+        self.ax.set_ylim([internal_parameter.y_view_range_min,internal_parameter.y_view_range_max])
+        self.ax.set_zlim([internal_parameter.z_view_range_min,internal_parameter.z_view_range_max])
 
     def set_range(self):
-        self.ax.set_xlim([-internal_parameter.x_3d_range/2,internal_parameter.x_3d_range/2])
-        self.ax.set_ylim([-internal_parameter.y_3d_range/2,internal_parameter.y_3d_range/2])
-        self.ax.set_zlim([-internal_parameter.z_3d_range/2,internal_parameter.z_3d_range/2])
+        # self.ax.set_xlim([-internal_parameter.x_3d_range/2,internal_parameter.x_3d_range/2])
+        # self.ax.set_ylim([-internal_parameter.y_3d_range/2,internal_parameter.y_3d_range/2])
+        # self.ax.set_zlim([-internal_parameter.z_3d_range/2,internal_parameter.z_3d_range/2])
+        self.ax.set_xlim([internal_parameter.x_view_range_min,internal_parameter.x_view_range_max])
+        self.ax.set_ylim([internal_parameter.y_view_range_min,internal_parameter.y_view_range_max])
+        self.ax.set_zlim([internal_parameter.z_view_range_min,internal_parameter.z_view_range_max])
         self.ax.figure.canvas.draw()
 
     def SetParameters(self,parameter_input):

@@ -9,6 +9,8 @@ class EventBus:
     PROGRESS_UPDATE = "progress_update"
     SHOW_PLOT = "show_plot"
 
+    test = 0
+
     def __init__(self):
         self.listeners = {}
 
