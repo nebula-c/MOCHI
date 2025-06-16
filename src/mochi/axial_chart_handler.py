@@ -57,6 +57,12 @@ class HeatmapCanvas(FigureCanvas):
 
         self.refresh()
 
+    def set_clim(self,vmin,vmax):
+        self.mycolorbar.remove()
+        self.mycolorbar = self.figure.colorbar(self.heatmap, ax=self.ax)
+        self.heatmap.set_clim(vmin=vmin, vmax=vmax)
+        self.refresh()
+
 class axial_chart_handler(FigureCanvas):
     def __init__(self,):
         self.x_chart = HeatmapCanvas()
@@ -65,9 +71,6 @@ class axial_chart_handler(FigureCanvas):
 
         self.get_parameters()
 
-        # self.x_chart.set_title("YZ (X=0)")
-        # self.y_chart.set_title("ZX (Y=0)")
-        # self.z_chart.set_title("XY (Z=0)")
         self.update_title()
         self.set_labels()
 
@@ -124,10 +127,6 @@ class axial_chart_handler(FigureCanvas):
 
     def show_data(self):
         my_direction = internal_parameter.target_direction
-        # my_direction = "B_x"
-        # my_direction = "B_y"
-        # my_direction = "B_z"
-
         vec_r = DataStore.get_vec_r()
         vec_B = DataStore.get_vec_B()
         len_x, len_y, len_z = DataStore.get_len_xyz()
@@ -193,23 +192,13 @@ class axial_chart_handler(FigureCanvas):
         if(is_get_YZ): YZ_B = np.reshape(YZ_B,(len_y,len_z)).T
         if(is_get_ZX): ZX_B = np.reshape(ZX_B,(len_x,len_z))
 
-
-        # x_3d_range_min = -internal_parameter.x_3d_range/2
-        # x_3d_range_max =  internal_parameter.x_3d_range/2
-        # y_3d_range_min = -internal_parameter.y_3d_range/2
-        # y_3d_range_max =  internal_parameter.y_3d_range/2
-        # z_3d_range_min = -internal_parameter.z_3d_range/2
-        # z_3d_range_max =  internal_parameter.z_3d_range/2
-
-        # self.x_chart.plot_heatmap(YZ_B,datarange=[y_3d_range_min,y_3d_range_max,z_3d_range_min,z_3d_range_max])
-        # self.y_chart.plot_heatmap(ZX_B,datarange=[z_3d_range_min,z_3d_range_max,x_3d_range_min,x_3d_range_max])
-        # self.z_chart.plot_heatmap(XY_B,datarange=[x_3d_range_min,x_3d_range_max,y_3d_range_min,y_3d_range_max])
-
-
-
         if(is_get_YZ): self.x_chart.plot_heatmap(YZ_B,datarange=[self.y_view_range_min,self.y_view_range_max,self.z_view_range_min,self.z_view_range_max])
         if(is_get_ZX): self.y_chart.plot_heatmap(ZX_B,datarange=[self.z_view_range_min,self.z_view_range_max,self.x_view_range_min,self.x_view_range_max])
         if(is_get_XY): self.z_chart.plot_heatmap(XY_B,datarange=[self.x_view_range_min,self.x_view_range_max,self.y_view_range_min,self.y_view_range_max])
+
+        self.x_chart.set_clim(internal_parameter.xlim_min,internal_parameter.xlim_max)
+        self.y_chart.set_clim(internal_parameter.ylim_min,internal_parameter.ylim_max)
+        self.z_chart.set_clim(internal_parameter.zlim_min,internal_parameter.zlim_max)
 
         self.refresh()
         self.set_labels()

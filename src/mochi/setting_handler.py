@@ -15,6 +15,7 @@ class setting_handler:
         self.widget_view_range = self.build_widget_view_range()
         self.widget_magnet_val = self.build_widget_magnet_val()
         self.widget_view = self.build_widget_view()
+        self.widget_view_clim = self.build_widget_view_clim()
         
         layout_settings = QtWidgets.QVBoxLayout()
         layout_buttons = QtWidgets.QHBoxLayout()
@@ -45,11 +46,18 @@ class setting_handler:
         layout_settings.addWidget(line4)
         layout_settings.addStretch()
 
-
         widget_view = self.widget_view
         widget_view.setContentsMargins(0, 0, 0, 0)
         layout_settings.addWidget(widget_view)
+        
+        line2 = self.set_dot_line()
+        layout_settings.addWidget(line2)
+        layout_settings.addStretch()
 
+        widget_view_clim = self.widget_view_clim
+        widget_view_clim.setContentsMargins(0, 0, 0, 0)
+        layout_settings.addWidget(widget_view_clim)
+        
         view_buttons = self.view_buttons()
         # export_buttons = self.export_buttons()
         layout_buttons2.addWidget(view_buttons)
@@ -318,6 +326,54 @@ class setting_handler:
         widget_temp_view.setLayout(layout_view)
         return widget_temp_view
 
+    def build_widget_view_clim(self,):
+        label_title_lim      = QtWidgets.QLabel("Colobar limit")
+        
+        layout_lim = QtWidgets.QVBoxLayout()
+        layout_lim_val = QtWidgets.QVBoxLayout()
+        layout_x_lim = QtWidgets.QHBoxLayout()
+        layout_y_lim = QtWidgets.QHBoxLayout()
+        layout_z_lim = QtWidgets.QHBoxLayout()
+
+        label_xmin      = QtWidgets.QLabel("xmin")
+        self.lineedit_xlim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_view_range_min))
+        label_xmax      = QtWidgets.QLabel("xmax")
+        self.lineedit_xlim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_view_range_max))
+        layout_x_lim.addWidget(label_xmin   )
+        layout_x_lim.addWidget(self.lineedit_xlim_min)
+        layout_x_lim.addWidget(label_xmax   )
+        layout_x_lim.addWidget(self.lineedit_xlim_max)
+
+        label_ymin      = QtWidgets.QLabel("ymin")
+        self.lineedit_ylim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_view_range_min))
+        label_ymax      = QtWidgets.QLabel("ymax")
+        self.lineedit_ylim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_view_range_max))
+        layout_y_lim.addWidget(label_ymin   )
+        layout_y_lim.addWidget(self.lineedit_ylim_min)
+        layout_y_lim.addWidget(label_ymax   )
+        layout_y_lim.addWidget(self.lineedit_ylim_max)
+
+        label_zmin      = QtWidgets.QLabel("zmin")
+        self.lineedit_zlim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_view_range_min))
+        label_zmax      = QtWidgets.QLabel("zmax")
+        self.lineedit_zlim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_view_range_max))
+        layout_z_lim.addWidget(label_zmin   )
+        layout_z_lim.addWidget(self.lineedit_zlim_min)
+        layout_z_lim.addWidget(label_zmax   )
+        layout_z_lim.addWidget(self.lineedit_zlim_max)
+
+        layout_lim.addWidget(label_title_lim,stretch=1)
+        layout_lim_val.addLayout(layout_x_lim,stretch=1)
+        layout_lim_val.addLayout(layout_y_lim,stretch=1)
+        layout_lim_val.addLayout(layout_z_lim,stretch=1)
+        layout_lim.addLayout(layout_lim_val)
+
+        widget_temp_range = QtWidgets.QWidget()        
+        widget_temp_range.setLayout(layout_lim)
+        return widget_temp_range
+
+
+
     def update_xyz_plane_combobox(self):
         self.combomox_x_lattice.clear()
         self.combomox_y_lattice.clear()
@@ -480,6 +536,14 @@ class setting_handler:
 
         internal_parameter.target_direction =  self.combomox_B_dir.currentText()
 
+
+        internal_parameter.xlim_max = float(self.lineedit_xlim_max.text())
+        internal_parameter.xlim_min = float(self.lineedit_xlim_min.text())
+        internal_parameter.ylim_max = float(self.lineedit_ylim_max.text())
+        internal_parameter.ylim_min = float(self.lineedit_ylim_min.text())
+        internal_parameter.zlim_max = float(self.lineedit_zlim_max.text())
+        internal_parameter.zlim_min = float(self.lineedit_zlim_min.text())
+
     def func_run(self):
         if self.is_set():            
             EventBus.emit(EventBus.ASK_CALCULATION)
@@ -558,4 +622,26 @@ class setting_handler:
 
     def func_view(self):
         self.set_view_parameter()
-        EventBus.emit(EventBus.SHOW_PLOT)
+        if self.is_min_max_right2():
+            EventBus.emit(EventBus.SHOW_PLOT)
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Applied")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Please check min & max values")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
+        
+
+    def is_min_max_right2(self):
+        if internal_parameter.xlim_max < internal_parameter.xlim_min:
+            return False
+        if internal_parameter.ylim_max < internal_parameter.ylim_min:
+            return False
+        if internal_parameter.zlim_max < internal_parameter.zlim_min:
+            return False
+        return True 
