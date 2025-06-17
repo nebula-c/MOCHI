@@ -120,7 +120,7 @@ class setting_handler:
 
 
     def build_widget_view_range(self,):
-        label_title_range      = QtWidgets.QLabel("View range (mm)")
+        label_title_range      = QtWidgets.QLabel("Calculation range (mm)")
         
         layout_range = QtWidgets.QVBoxLayout()
         layout_range_val = QtWidgets.QVBoxLayout()
