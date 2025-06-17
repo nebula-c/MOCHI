@@ -32,6 +32,13 @@ class DataStore:
             return True
         else:
             return False
+
+    def is_there_data(self):
+        if self.__vec_B is None or self.__vec_r is None:
+            return False
+        else:
+            return True
+
     
     def set_len_xyz(self,myx,myy,myz):
         self.__lenx = myx

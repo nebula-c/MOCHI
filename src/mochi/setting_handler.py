@@ -4,7 +4,7 @@ import numpy as np
 
 from mochi.EventBus import EventBus
 from mochi.internal_parameter import internal_parameter
-
+from mochi.DataStore import DataStore
 
 class setting_handler:
     def __init__(self):
@@ -520,37 +520,56 @@ class setting_handler:
 
 
     def set_parameters(self):
-        internal_parameter.x_magnet_len = float(self.lineedit_magnet_xlen.text())
-        internal_parameter.y_magnet_len = float(self.lineedit_magnet_ylen.text())
-        internal_parameter.z_magnet_len = float(self.lineedit_magnet_zlen.text())
-        internal_parameter.B_r = float(self.lineedit_br.text())
+        try:
+            internal_parameter.x_magnet_len = float(self.lineedit_magnet_xlen.text())
+            internal_parameter.y_magnet_len = float(self.lineedit_magnet_ylen.text())
+            internal_parameter.z_magnet_len = float(self.lineedit_magnet_zlen.text())
+            internal_parameter.B_r = float(self.lineedit_br.text())
 
-        internal_parameter.dipole_num_y = float(self.lineedit_ydipole.text())
-        internal_parameter.dipole_num_z = float(self.lineedit_zdipole.text())
+            internal_parameter.dipole_num_y = float(self.lineedit_ydipole.text())
+            internal_parameter.dipole_num_z = float(self.lineedit_zdipole.text())
 
-        internal_parameter.x_view_range_max    = float(self.lineedit_xmax.text())
-        internal_parameter.x_view_range_min    = float(self.lineedit_xmin.text())
-        internal_parameter.y_view_range_max    = float(self.lineedit_ymax.text())
-        internal_parameter.y_view_range_min    = float(self.lineedit_ymin.text())
-        internal_parameter.z_view_range_max    = float(self.lineedit_zmax.text())
-        internal_parameter.z_view_range_min    = float(self.lineedit_zmin.text())
+            internal_parameter.x_view_range_max    = float(self.lineedit_xmax.text())
+            internal_parameter.x_view_range_min    = float(self.lineedit_xmin.text())
+            internal_parameter.y_view_range_max    = float(self.lineedit_ymax.text())
+            internal_parameter.y_view_range_min    = float(self.lineedit_ymin.text())
+            internal_parameter.z_view_range_max    = float(self.lineedit_zmax.text())
+            internal_parameter.z_view_range_min    = float(self.lineedit_zmin.text())
 
-        internal_parameter.field_resolution    = float(self.lineedit_field_resol.text())
+            internal_parameter.field_resolution    = float(self.lineedit_field_resol.text())
+            return True
+        except:
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Please check values")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
+            return False
+
 
     def set_view_parameter(self):
-        internal_parameter.sliceview_x = float(self.combomox_x_lattice.currentText())
-        internal_parameter.sliceview_y = float(self.combomox_y_lattice.currentText())
-        internal_parameter.sliceview_z = float(self.combomox_z_lattice.currentText())
+        try:
+            internal_parameter.sliceview_x = float(self.combomox_x_lattice.currentText())
+            internal_parameter.sliceview_y = float(self.combomox_y_lattice.currentText())
+            internal_parameter.sliceview_z = float(self.combomox_z_lattice.currentText())
 
-        internal_parameter.target_direction =  self.combomox_B_dir.currentText()
+            internal_parameter.target_direction =  self.combomox_B_dir.currentText()
 
 
-        internal_parameter.YZ_lim_max = float(self.lineedit_YZ_lim_max.text())
-        internal_parameter.YZ_lim_min = float(self.lineedit_YZ_lim_min.text())
-        internal_parameter.ZX_lim_max = float(self.lineedit_ZX_lim_max.text())
-        internal_parameter.ZX_lim_min = float(self.lineedit_ZX_lim_min.text())
-        internal_parameter.XY_lim_max = float(self.lineedit_XY_lim_max.text())
-        internal_parameter.XY_lim_min = float(self.lineedit_XY_lim_min.text())
+            internal_parameter.YZ_lim_max = float(self.lineedit_YZ_lim_max.text())
+            internal_parameter.YZ_lim_min = float(self.lineedit_YZ_lim_min.text())
+            internal_parameter.ZX_lim_max = float(self.lineedit_ZX_lim_max.text())
+            internal_parameter.ZX_lim_min = float(self.lineedit_ZX_lim_min.text())
+            internal_parameter.XY_lim_max = float(self.lineedit_XY_lim_max.text())
+            internal_parameter.XY_lim_min = float(self.lineedit_XY_lim_min.text())
+            return True
+        except:
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Please check values")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
+            return False
 
     def func_run(self):
         if self.is_set():            
@@ -563,28 +582,32 @@ class setting_handler:
             msg.exec()
  
     def func_set(self):
-        self.set_parameters()
-        if self.is_min_max_right():
-            EventBus.emit(EventBus.SET_BUTTON_CLICKED)
-            msg = QtWidgets.QMessageBox()
-            msg.setText("Applied")
-            msg.setWindowTitle("Inform")
-            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-            msg.exec()
-        else:
-            msg = QtWidgets.QMessageBox()
-            msg.setText("Please check min & max values")
-            msg.setWindowTitle("Inform")
-            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-            msg.exec()
+        if self.set_parameters():
+            if self.is_min_max_right():
+                EventBus.emit(EventBus.SET_BUTTON_CLICKED)
+                msg = QtWidgets.QMessageBox()
+                msg.setText("Applied")
+                msg.setWindowTitle("Inform")
+                msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+                msg.exec()
+            else:
+                msg = QtWidgets.QMessageBox()
+                msg.setText("Please check min & max values")
+                msg.setWindowTitle("Inform")
+                msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+                msg.exec()
+
     
     def func_export(self):
-        EventBus.emit(EventBus.EXPORT_BUTTON_CLICKED)
-        msg = QtWidgets.QMessageBox()
-        msg.setText("Exported")
-        msg.setWindowTitle("Inform")
-        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-        msg.exec()
+        if DataStore.is_there_data():
+            EventBus.emit(EventBus.EXPORT_BUTTON_CLICKED)
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Please 'Run' button first, to calculate")
+            msg.setWindowTitle("Inform")
+            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+            msg.exec()
+        
 
 
     def is_set(self):
@@ -629,17 +652,24 @@ class setting_handler:
         return True 
 
     def func_view(self):
-        self.set_view_parameter()
-        if self.is_min_max_right2():
-            EventBus.emit(EventBus.SHOW_PLOT)
-            msg = QtWidgets.QMessageBox()
-            msg.setText("Applied")
-            msg.setWindowTitle("Inform")
-            msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
-            msg.exec()
+        if DataStore.is_there_data():
+            if self.set_view_parameter():
+                if self.is_min_max_right2():
+                    EventBus.emit(EventBus.SHOW_PLOT)
+                    msg = QtWidgets.QMessageBox()
+                    msg.setText("Applied")
+                    msg.setWindowTitle("Inform")
+                    msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+                    msg.exec()
+                else:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setText("Please check min & max values")
+                    msg.setWindowTitle("Inform")
+                    msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+                    msg.exec()
         else:
             msg = QtWidgets.QMessageBox()
-            msg.setText("Please check min & max values")
+            msg.setText("Please 'Run' button first, to calculate")
             msg.setWindowTitle("Inform")
             msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
             msg.exec()
