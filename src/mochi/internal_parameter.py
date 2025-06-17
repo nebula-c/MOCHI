@@ -24,11 +24,11 @@ class internal_parameter():
         self.sliceview_z = 0                # mm
         self.target_direction = "B_x"
 
-        self.xlim_max =  100
-        self.xlim_min = -100
-        self.ylim_max =  100
-        self.ylim_min = -100
-        self.zlim_max =  100
-        self.zlim_min = -100
+        self.YZ_lim_max =  100
+        self.YZ_lim_min = -100
+        self.ZX_lim_max =  100
+        self.ZX_lim_min = -100
+        self.XY_lim_max =  100
+        self.XY_lim_min = -100
 
 internal_parameter = internal_parameter()

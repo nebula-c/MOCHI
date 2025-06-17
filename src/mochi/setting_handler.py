@@ -339,41 +339,41 @@ class setting_handler:
         
         layout_lim = QtWidgets.QVBoxLayout()
         layout_lim_val = QtWidgets.QVBoxLayout()
-        layout_x_lim = QtWidgets.QHBoxLayout()
-        layout_y_lim = QtWidgets.QHBoxLayout()
-        layout_z_lim = QtWidgets.QHBoxLayout()
+        layout_YZ_lim = QtWidgets.QHBoxLayout()
+        layout_ZX_lim = QtWidgets.QHBoxLayout()
+        layout_XY_lim = QtWidgets.QHBoxLayout()
 
-        label_xmin      = QtWidgets.QLabel("xmin")
-        self.lineedit_xlim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_view_range_min))
-        label_xmax      = QtWidgets.QLabel("xmax")
-        self.lineedit_xlim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_view_range_max))
-        layout_x_lim.addWidget(label_xmin   )
-        layout_x_lim.addWidget(self.lineedit_xlim_min)
-        layout_x_lim.addWidget(label_xmax   )
-        layout_x_lim.addWidget(self.lineedit_xlim_max)
+        label_YZ_min      = QtWidgets.QLabel("YZ-min")
+        self.lineedit_YZ_lim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_view_range_min))
+        label_YZ_xmax      = QtWidgets.QLabel("YZ-max")
+        self.lineedit_YZ_lim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.x_view_range_max))
+        layout_YZ_lim.addWidget(label_YZ_min   )
+        layout_YZ_lim.addWidget(self.lineedit_YZ_lim_min)
+        layout_YZ_lim.addWidget(label_YZ_xmax   )
+        layout_YZ_lim.addWidget(self.lineedit_YZ_lim_max)
 
-        label_ymin      = QtWidgets.QLabel("ymin")
-        self.lineedit_ylim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_view_range_min))
-        label_ymax      = QtWidgets.QLabel("ymax")
-        self.lineedit_ylim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_view_range_max))
-        layout_y_lim.addWidget(label_ymin   )
-        layout_y_lim.addWidget(self.lineedit_ylim_min)
-        layout_y_lim.addWidget(label_ymax   )
-        layout_y_lim.addWidget(self.lineedit_ylim_max)
+        label_ZX_min      = QtWidgets.QLabel("ZX-min")
+        self.lineedit_ZX_lim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_view_range_min))
+        label_ZX_max      = QtWidgets.QLabel("ZX-max")
+        self.lineedit_ZX_lim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.y_view_range_max))
+        layout_ZX_lim.addWidget(label_ZX_min   )
+        layout_ZX_lim.addWidget(self.lineedit_ZX_lim_min)
+        layout_ZX_lim.addWidget(label_ZX_max   )
+        layout_ZX_lim.addWidget(self.lineedit_ZX_lim_max)
 
-        label_zmin      = QtWidgets.QLabel("zmin")
-        self.lineedit_zlim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_view_range_min))
-        label_zmax      = QtWidgets.QLabel("zmax")
-        self.lineedit_zlim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_view_range_max))
-        layout_z_lim.addWidget(label_zmin   )
-        layout_z_lim.addWidget(self.lineedit_zlim_min)
-        layout_z_lim.addWidget(label_zmax   )
-        layout_z_lim.addWidget(self.lineedit_zlim_max)
+        label_XY_min      = QtWidgets.QLabel("XY-min")
+        self.lineedit_XY_lim_min   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_view_range_min))
+        label_XY_max      = QtWidgets.QLabel("XY-max")
+        self.lineedit_XY_lim_max   = QtWidgets.QLineEdit("{}".format(internal_parameter.z_view_range_max))
+        layout_XY_lim.addWidget(label_XY_min   )
+        layout_XY_lim.addWidget(self.lineedit_XY_lim_min)
+        layout_XY_lim.addWidget(label_XY_max   )
+        layout_XY_lim.addWidget(self.lineedit_XY_lim_max)
 
         layout_lim.addWidget(label_title_lim,stretch=1)
-        layout_lim_val.addLayout(layout_x_lim,stretch=1)
-        layout_lim_val.addLayout(layout_y_lim,stretch=1)
-        layout_lim_val.addLayout(layout_z_lim,stretch=1)
+        layout_lim_val.addLayout(layout_YZ_lim,stretch=1)
+        layout_lim_val.addLayout(layout_ZX_lim,stretch=1)
+        layout_lim_val.addLayout(layout_XY_lim,stretch=1)
         layout_lim.addLayout(layout_lim_val)
 
         widget_temp_range = QtWidgets.QWidget()        
@@ -545,12 +545,12 @@ class setting_handler:
         internal_parameter.target_direction =  self.combomox_B_dir.currentText()
 
 
-        internal_parameter.xlim_max = float(self.lineedit_xlim_max.text())
-        internal_parameter.xlim_min = float(self.lineedit_xlim_min.text())
-        internal_parameter.ylim_max = float(self.lineedit_ylim_max.text())
-        internal_parameter.ylim_min = float(self.lineedit_ylim_min.text())
-        internal_parameter.zlim_max = float(self.lineedit_zlim_max.text())
-        internal_parameter.zlim_min = float(self.lineedit_zlim_min.text())
+        internal_parameter.YZ_lim_max = float(self.lineedit_YZ_lim_max.text())
+        internal_parameter.YZ_lim_min = float(self.lineedit_YZ_lim_min.text())
+        internal_parameter.ZX_lim_max = float(self.lineedit_ZX_lim_max.text())
+        internal_parameter.ZX_lim_min = float(self.lineedit_ZX_lim_min.text())
+        internal_parameter.XY_lim_max = float(self.lineedit_XY_lim_max.text())
+        internal_parameter.XY_lim_min = float(self.lineedit_XY_lim_min.text())
 
     def func_run(self):
         if self.is_set():            
@@ -646,10 +646,10 @@ class setting_handler:
         
 
     def is_min_max_right2(self):
-        if internal_parameter.xlim_max < internal_parameter.xlim_min:
+        if internal_parameter.YZ_lim_max < internal_parameter.YZ_lim_min:
             return False
-        if internal_parameter.ylim_max < internal_parameter.ylim_min:
+        if internal_parameter.ZX_lim_max < internal_parameter.ZX_lim_min:
             return False
-        if internal_parameter.zlim_max < internal_parameter.zlim_min:
+        if internal_parameter.XY_lim_max < internal_parameter.XY_lim_min:
             return False
         return True 

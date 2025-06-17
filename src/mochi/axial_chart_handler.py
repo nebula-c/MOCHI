@@ -196,9 +196,9 @@ class axial_chart_handler(FigureCanvas):
         if(is_get_ZX): self.y_chart.plot_heatmap(ZX_B,datarange=[self.z_view_range_min,self.z_view_range_max,self.x_view_range_min,self.x_view_range_max])
         if(is_get_XY): self.z_chart.plot_heatmap(XY_B,datarange=[self.x_view_range_min,self.x_view_range_max,self.y_view_range_min,self.y_view_range_max])
 
-        self.x_chart.set_clim(internal_parameter.xlim_min,internal_parameter.xlim_max)
-        self.y_chart.set_clim(internal_parameter.ylim_min,internal_parameter.ylim_max)
-        self.z_chart.set_clim(internal_parameter.zlim_min,internal_parameter.zlim_max)
+        self.x_chart.set_clim(internal_parameter.YZ_lim_min,internal_parameter.YZ_lim_max)
+        self.y_chart.set_clim(internal_parameter.ZX_lim_min,internal_parameter.ZX_lim_max)
+        self.z_chart.set_clim(internal_parameter.XY_lim_min,internal_parameter.XY_lim_max)
 
         self.refresh()
         self.set_labels()
