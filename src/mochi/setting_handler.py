@@ -633,7 +633,7 @@ class setting_handler:
         if internal_parameter.B_r != float(self.lineedit_br.text()):
             return False
 
-        if internal_parameter.field_resolution != int(self.lineedit_field_resol.text()):
+        if internal_parameter.field_resolution != float(self.lineedit_field_resol.text()):
             return False
         if internal_parameter.dipole_num_y != float(self.lineedit_ydipole.text()):
             return False
