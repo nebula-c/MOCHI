@@ -10,7 +10,7 @@ setup(
     package_data={
     },
     install_requires=[
-        'PyQt6'
+        'setuptools','PyQt6','numpy','pandas','scipy<=1.15.2','matplotlib','pyinstaller'
     ],
     entry_points={
         'console_scripts': [
